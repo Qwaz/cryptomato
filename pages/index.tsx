@@ -54,7 +54,7 @@ const Blog: React.FC<Props> = (props) => {
 
             <Grid.Column verticalAlign="middle">
               <Button
-                content="Sign up"
+                content="Sign Up"
                 icon="signup"
                 size="big"
                 positive

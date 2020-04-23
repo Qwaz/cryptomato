@@ -19,7 +19,7 @@ model Post {
 model User {
   id       Int    @default(autoincrement()) @id
   email    String @unique
-  name     String @unique
+  nickname String @unique
   password String
   posts    Post[]
 }
