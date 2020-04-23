@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next",
     "build": "next build",
     "start": "next start"
   },
@@ -22,9 +22,10 @@
     "semantic-ui-react": "^0.88.2"
   },
   "devDependencies": {
-    "@prisma/cli": "2.0.0-beta.2",
+    "@prisma/cli": "^2.0.0-beta.3",
     "@types/node": "13.13.2",
     "@types/react": "16.9.34",
+    "cross-env": "^7.0.2",
     "typescript": "3.8.3"
   }
 }

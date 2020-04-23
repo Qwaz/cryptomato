@@ -17,8 +17,9 @@ model Post {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
+  id       Int    @default(autoincrement()) @id
+  email    String @unique
+  name     String @unique
+  password String
+  posts    Post[]
 }

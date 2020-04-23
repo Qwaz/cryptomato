@@ -12,6 +12,7 @@ import {
   Divider,
   Segment,
 } from "semantic-ui-react";
+import Router from "next/router";
 
 type Props = {
   feed: PostProps[];
@@ -52,7 +53,13 @@ const Blog: React.FC<Props> = (props) => {
             </Grid.Column>
 
             <Grid.Column verticalAlign="middle">
-              <Button content="Sign up" icon="signup" size="big" positive />
+              <Button
+                content="Sign up"
+                icon="signup"
+                size="big"
+                positive
+                onClick={() => Router.push("/signup")}
+              />
             </Grid.Column>
           </Grid>
 

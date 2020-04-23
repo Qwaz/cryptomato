@@ -2,3 +2,7 @@
 
 node_modules/
 .next/
+
+# Do not keep database until DB scheme becomes stable
+prisma/dev.db
+prisma/migrations
