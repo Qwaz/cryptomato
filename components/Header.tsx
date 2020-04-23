@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Menu } from "semantic-ui-react";
+import { Menu, Container } from "semantic-ui-react";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -11,12 +11,14 @@ const Header: React.FC = () => {
   return (
     <nav>
       <Menu style={{ marginBottom: "6em" }}>
-        <Menu.Item header>Cryptomato</Menu.Item>
-        <Menu.Item active={isActive("/")}>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </Menu.Item>
+        <Container>
+          <Menu.Item header>Cryptomato</Menu.Item>
+          <Menu.Item active={isActive("/")}>
+            <Link href="/">
+              <a>Home</a>
+            </Link>
+          </Menu.Item>
+        </Container>
       </Menu>
     </nav>
   );

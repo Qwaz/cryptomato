@@ -1,14 +1,37 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import withSession, { NextApiRequestWithSession } from "../../lib/session";
 
 const prisma = new PrismaClient();
 
-// POST /api/user
-// Required fields in body: name, email
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method === "GET") {
+    await withSession(handleGET)(req, res);
+  } else if (req.method === "POST") {
+    handlePOST(req, res);
+  } else {
+    res.status(405).end();
+  }
+}
+
+// GET /api/user
+async function handleGET(req: NextApiRequestWithSession, res: NextApiResponse) {
+  const user = req.session.get("user");
+  if (user?.isLoggedIn) {
+    res.json(user);
+  } else {
+    res.json({
+      isLoggedIn: false,
+    });
+  }
+}
+
+// POST /api/user
+// Required fields in body: nickname, email, password
+async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
   // TODO: hash password
   const { nickname, email, password } = req.body;
 
@@ -61,11 +84,12 @@ export default async function handle(
       // TODO: login a user
       console.log(result);
 
-      return res.status(200).end();
+      res.status(200).end();
+      return;
     } catch (error) {
       errorArr.push(error.message);
     }
   }
 
-  return res.status(400).json(errorArr);
+  res.status(400).json(errorArr);
 }

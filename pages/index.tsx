@@ -1,18 +1,11 @@
 import React from "react";
-import { GetServerSideProps } from "next";
-import Layout from "../components/Layout";
 import fetch from "isomorphic-unfetch";
-import Post, { PostProps } from "../components/Post";
-import {
-  Container,
-  Header,
-  Grid,
-  Form,
-  Button,
-  Divider,
-  Segment,
-} from "semantic-ui-react";
-import Router from "next/router";
+import { GetServerSideProps } from "next";
+import { Container, Header } from "semantic-ui-react";
+
+import Layout from "../components/Layout";
+import { PostProps } from "../components/Post";
+import Login from "../components/Login";
 
 type Props = {
   feed: PostProps[];
@@ -30,41 +23,7 @@ const Blog: React.FC<Props> = (props) => {
             </Header.Subheader>
           </Header.Content>
         </Header>
-        <Segment placeholder>
-          <Grid columns={2} relaxed="very" stackable>
-            <Grid.Column>
-              <Form>
-                <Form.Input
-                  icon="user"
-                  iconPosition="left"
-                  label="Email"
-                  placeholder="Email"
-                />
-                <Form.Input
-                  icon="lock"
-                  iconPosition="left"
-                  label="Password"
-                  placeholder="Password"
-                  type="password"
-                />
-
-                <Button content="Login" primary />
-              </Form>
-            </Grid.Column>
-
-            <Grid.Column verticalAlign="middle">
-              <Button
-                content="Sign Up"
-                icon="signup"
-                size="big"
-                positive
-                onClick={() => Router.push("/signup")}
-              />
-            </Grid.Column>
-          </Grid>
-
-          <Divider vertical>Or</Divider>
-        </Segment>
+        <Login />
       </Container>
     </Layout>
   );
