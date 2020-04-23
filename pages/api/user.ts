@@ -11,7 +11,7 @@ export default async function handle(
   if (req.method === "GET") {
     await withSession(handleGET)(req, res);
   } else if (req.method === "POST") {
-    handlePOST(req, res);
+    await handlePOST(req, res);
   } else {
     res.status(405).end();
   }

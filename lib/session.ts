@@ -29,6 +29,7 @@ export type Session = {
   get: (key: "user") => User;
   set: (key: "user", value: User) => void;
   save: () => Promise<void>;
+  destroy: () => void;
 };
 
 export type NextApiRequestWithSession = NextApiRequest & {
