@@ -1,7 +1,8 @@
 import React from "react";
-import { PrismaClient, Challenge, ChallengeGetPayload } from "@prisma/client";
+import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import { Container, List, Card, Rating, Label } from "semantic-ui-react";
+import Router from "next/router";
+import { Container, Card, Rating, Label } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
 
@@ -26,7 +27,11 @@ const Challenges: React.FC<Props> = (props) => {
       );
     }
     return (
-      <Card key={challenge.id}>
+      <Card
+        key={challenge.id}
+        link
+        onClick={() => Router.push(`/challenge/${challenge.id}`)}
+      >
         <Card.Content>
           <Card.Header>{challenge.name}</Card.Header>
           <Card.Description>{challenge.description}</Card.Description>
