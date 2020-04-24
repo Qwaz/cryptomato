@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Container, Label, Header } from "semantic-ui-react";
 
 import Layout from "../../components/Layout";
+import LoginCheckButton from "../../components/LoginCheckButton";
 
 const CodeEditor = dynamic(import("../../components/CodeEditor"), {
   ssr: false,
@@ -28,7 +29,7 @@ const Challenge: React.FC<Props> = (props) => {
   const categories = [];
   for (let category of chal.categories) {
     categories.push(
-      <Label key={category.id} color="teal" size="small">
+      <Label key={category.id} color="red" size="small">
         {category.name}
       </Label>
     );
@@ -50,6 +51,7 @@ const Challenge: React.FC<Props> = (props) => {
             setCode(value);
           }}
         />
+        <LoginCheckButton />
       </Container>
     </Layout>
   );

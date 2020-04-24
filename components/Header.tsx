@@ -27,7 +27,7 @@ const Header: React.FC = () => {
 
   return (
     <nav>
-      <Menu style={{ marginBottom: "6em" }}>
+      <Menu style={{ marginBottom: "6em" }} color="green" inverted>
         <Container>
           <Menu.Item header>Cryptomato</Menu.Item>
           <Link href="/">

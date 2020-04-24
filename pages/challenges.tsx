@@ -22,7 +22,7 @@ const Challenges: React.FC<Props> = (props) => {
     const categories = [];
     for (let category of challenge.categories) {
       categories.push(
-        <Label key={category.id} color="teal">
+        <Label key={category.id} color="red">
           {category.name}
         </Label>
       );

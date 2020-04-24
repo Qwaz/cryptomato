@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Header } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
-import Login from "../components/Login";
+import LoginBanner from "../components/LoginBanner";
 
 const Blog: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ const Blog: React.FC = () => {
             </Header.Subheader>
           </Header.Content>
         </Header>
-        <Login />
+        <LoginBanner />
       </Container>
     </Layout>
   );

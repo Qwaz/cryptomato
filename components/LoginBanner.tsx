@@ -10,8 +10,9 @@ import {
   Header,
 } from "semantic-ui-react";
 import useUser from "../lib/useUser";
+import Link from "next/link";
 
-const Login: React.FC = () => {
+const LoginBanner: React.FC = () => {
   const { user, mutateUser } = useUser();
 
   const [loading, setLoading] = useState(false);
@@ -51,9 +52,19 @@ const Login: React.FC = () => {
     <>
       <Segment placeholder>
         {user?.isLoggedIn ? (
-          <Header as="h2" textAlign="center">
-            Welcome, {user.nickname}!
-          </Header>
+          <>
+            <Header as="h2" textAlign="center">
+              Welcome, {user.nickname}!
+            </Header>
+            <Link href="/challenges">
+              <Button
+                content="Let's go!"
+                icon="right arrow"
+                labelPosition="right"
+                color="red"
+              />
+            </Link>
+          </>
         ) : (
           <>
             <Grid columns={2} relaxed="very" stackable>
@@ -76,7 +87,7 @@ const Login: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
 
-                  <Button content="Login" primary />
+                  <Button content="Login" />
                 </Form>
               </Grid.Column>
 
@@ -85,7 +96,7 @@ const Login: React.FC = () => {
                   content="Sign Up"
                   icon="signup"
                   size="big"
-                  positive
+                  primary
                   onClick={() => Router.push("/signup")}
                 />
               </Grid.Column>
@@ -111,4 +122,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginBanner;

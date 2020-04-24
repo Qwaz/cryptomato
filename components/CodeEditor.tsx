@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Controlled as CodeMirror } from "react-codemirror2";
 
 let modeLoaded = false;
@@ -9,7 +9,8 @@ if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
 
 const CodeEditor = (props) => {
   const options = {
-    theme: "duotone-light",
+    tabSize: 2,
+    theme: "elegant",
     lineNumbers: true,
   };
   if (modeLoaded) {
@@ -17,7 +18,7 @@ const CodeEditor = (props) => {
   }
 
   return (
-    <div>
+    <div style={{ marginBottom: "2em" }}>
       <CodeMirror {...props} options={options} />
     </div>
   );
