@@ -17,7 +17,7 @@ const Header: React.FC = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:3000/api/logout`);
+      const res = await fetch(`/api/logout`);
       mutateUser();
     } catch (error) {
       console.error(error);
