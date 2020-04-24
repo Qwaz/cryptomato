@@ -1,0 +1,13 @@
+name = "TestChallenge1"
+
+description = """
+Hello! Welcome to *test challenge 1*.
+In this challenge, you can do this and that.
+Can you solve this problem?"""
+
+categories = [
+  "ind-cpa",
+  "blockcipher",
+]
+
+level = 1

@@ -10,6 +10,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
+  const startsWith: (pathname: string) => boolean = (pathname) =>
+    router.pathname.startsWith(pathname);
 
   const logout = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -31,6 +33,11 @@ const Header: React.FC = () => {
           <Menu.Item active={isActive("/")}>
             <Link href="/">
               <a>Home</a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item active={startsWith("/challenge")}>
+            <Link href="/challenges">
+              <a>Challenge</a>
             </Link>
           </Menu.Item>
           {user?.isLoggedIn && (

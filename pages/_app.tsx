@@ -1,10 +1,11 @@
 import "semantic-ui-css/semantic.min.css";
 
+import { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import fetch from "../lib/fetchJson";
 
 // This default export is required in a new `pages/_app.js` file.
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SWRConfig
       value={{

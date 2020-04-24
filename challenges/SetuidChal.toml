@@ -1,0 +1,11 @@
+name = "SetuidChal"
+
+description = """
+This is a problem for Setuid"""
+
+categories = [
+  "nocrypto",
+  "plz",
+]
+
+level = 5

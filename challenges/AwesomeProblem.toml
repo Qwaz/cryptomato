@@ -1,0 +1,10 @@
+name = "AwesomeProblem"
+
+description = """
+This problem is so awesome"""
+
+categories = [
+  "awesome",
+]
+
+level = 4

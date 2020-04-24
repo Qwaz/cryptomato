@@ -1,0 +1,11 @@
+name = "JinmoChal"
+
+description = """
+This is problem for Jinmo123"""
+
+categories = [
+  "ind-cpa",
+  "santoki",
+]
+
+level = 1

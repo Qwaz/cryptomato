@@ -7,13 +7,18 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Post {
-  id        Int     @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Category {
+  id         Int         @default(autoincrement()) @id
+  name       String      @unique
+  challenges Challenge[] @relation(references: [id])
+}
+
+model Challenge {
+  id          Int        @default(autoincrement()) @id
+  name        String     @unique
+  description String
+  level       Int
+  categories  Category[] @relation(references: [id])
 }
 
 model User {
@@ -21,5 +26,4 @@ model User {
   email    String @unique
   nickname String @unique
   password String
-  posts    Post[]
 }
