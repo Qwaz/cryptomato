@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { Menu, Container, Button } from "semantic-ui-react";
 import useUser from "../lib/useUser";
 
@@ -30,16 +30,16 @@ const Header: React.FC = () => {
       <Menu style={{ marginBottom: "6em" }}>
         <Container>
           <Menu.Item header>Cryptomato</Menu.Item>
-          <Menu.Item active={isActive("/")}>
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </Menu.Item>
-          <Menu.Item active={startsWith("/challenge")}>
-            <Link href="/challenges">
-              <a>Challenge</a>
-            </Link>
-          </Menu.Item>
+          <Menu.Item
+            name="home"
+            active={isActive("/")}
+            onClick={() => Router.push("/")}
+          />
+          <Menu.Item
+            name="challenge"
+            active={startsWith("/challenge")}
+            onClick={() => Router.push("/challenges")}
+          />
           {user?.isLoggedIn && (
             <Menu.Menu position="right">
               <Menu.Item name="logout" onClick={logout} />
