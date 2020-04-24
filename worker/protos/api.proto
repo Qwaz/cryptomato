@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+service Experiment_API {
+  rpc RPC (RPC_Request) returns (RPC_Reply) {}
+}
+
+message RPC_Request {
+  string f = 1;
+  string args = 2;
+}
+
+message RPC_Reply {
+  string r = 1;
+}

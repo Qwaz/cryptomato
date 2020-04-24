@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+service Manager {
+  rpc Evaluation (EvaluationRequest) returns (EvaluationReply) {}
+}
+
+message EvaluationRequest {
+  string challenge_name = 1;
+  string code = 2;
+}
+
+message EvaluationReply {
+  string result = 1;
+}
+
+service SandboxExec {
+  rpc SandboxExec (SandboxExecRequest) returns (SandboxExecReply) {}
+}
+
+message SandboxExecRequest {
+  string code = 1;
+  string options = 2;
+}
+
+message SandboxExecReply {
+  string result = 1;
+}
