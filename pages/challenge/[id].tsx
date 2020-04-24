@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import dynamic from "next/dynamic";
 import { Container, Label, Header } from "semantic-ui-react";
 
 import Layout from "../../components/Layout";
+
+const CodeEditor = dynamic(import("../../components/CodeEditor"), {
+  ssr: false,
+});
 
 type Props = {
   challenge: ChallengeGetPayload<{
@@ -16,6 +21,8 @@ type Props = {
 const prisma = new PrismaClient();
 
 const Challenge: React.FC<Props> = (props) => {
+  const [code, setCode] = useState("");
+
   const chal = props.challenge;
 
   const categories = [];
@@ -35,6 +42,14 @@ const Challenge: React.FC<Props> = (props) => {
           {categories}
         </Header>
         <p>{chal.description}</p>
+
+        <Header as="h2">Code</Header>
+        <CodeEditor
+          value={code}
+          onBeforeChange={(editor, data, value) => {
+            setCode(value);
+          }}
+        />
       </Container>
     </Layout>
   );

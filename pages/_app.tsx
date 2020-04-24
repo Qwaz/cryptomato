@@ -1,4 +1,6 @@
 import "semantic-ui-css/semantic.min.css";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/duotone-light.css";
 
 import { AppProps } from "next/app";
 import { SWRConfig } from "swr";
