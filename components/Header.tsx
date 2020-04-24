@@ -8,7 +8,7 @@ const Header: React.FC = () => {
   const { user, mutateUser } = useUser();
 
   const router = useRouter();
-  const isActive: (pathname: string) => boolean = (pathname) =>
+  const matches: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
   const startsWith: (pathname: string) => boolean = (pathname) =>
     router.pathname.startsWith(pathname);
@@ -30,16 +30,12 @@ const Header: React.FC = () => {
       <Menu style={{ marginBottom: "6em" }}>
         <Container>
           <Menu.Item header>Cryptomato</Menu.Item>
-          <Menu.Item
-            name="home"
-            active={isActive("/")}
-            onClick={() => Router.push("/")}
-          />
-          <Menu.Item
-            name="challenge"
-            active={startsWith("/challenge")}
-            onClick={() => Router.push("/challenges")}
-          />
+          <Link href="/">
+            <Menu.Item name="home" active={matches("/")} />
+          </Link>
+          <Link href="/challenges">
+            <Menu.Item name="challenges" active={startsWith("/challenge")} />
+          </Link>
           {user?.isLoggedIn && (
             <Menu.Menu position="right">
               <Menu.Item name="logout" onClick={logout} />

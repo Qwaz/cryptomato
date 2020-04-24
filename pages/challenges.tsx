@@ -5,6 +5,7 @@ import Router from "next/router";
 import { Container, Card, Rating, Label } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
+import Link from "next/link";
 
 type Props = {
   challenges: ChallengeGetPayload<{
@@ -27,26 +28,24 @@ const Challenges: React.FC<Props> = (props) => {
       );
     }
     return (
-      <Card
-        key={challenge.id}
-        link
-        onClick={() => Router.push(`/challenge/${challenge.id}`)}
-      >
-        <Card.Content>
-          <Card.Header>{challenge.name}</Card.Header>
-          <Card.Description>{challenge.description}</Card.Description>
-        </Card.Content>
-        <Card.Content extra>{categories}</Card.Content>
-        <Card.Content extra>
-          Difficulty:{" "}
-          <Rating
-            icon="star"
-            defaultRating={challenge.level}
-            maxRating={5}
-            disabled
-          />
-        </Card.Content>
-      </Card>
+      <Link href="/challenge/[id]" as={`/challenge/${challenge.id}`}>
+        <Card key={challenge.id} link>
+          <Card.Content>
+            <Card.Header>{challenge.name}</Card.Header>
+            <Card.Description>{challenge.description}</Card.Description>
+          </Card.Content>
+          <Card.Content extra>{categories}</Card.Content>
+          <Card.Content extra>
+            Difficulty:{" "}
+            <Rating
+              icon="star"
+              defaultRating={challenge.level}
+              maxRating={5}
+              disabled
+            />
+          </Card.Content>
+        </Card>
+      </Link>
     );
   });
   return (

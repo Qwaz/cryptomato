@@ -21,7 +21,7 @@ const Challenge: React.FC<Props> = (props) => {
   const categories = [];
   for (let category of chal.categories) {
     categories.push(
-      <Label key={category.id} color="teal">
+      <Label key={category.id} color="teal" size="small">
         {category.name}
       </Label>
     );
