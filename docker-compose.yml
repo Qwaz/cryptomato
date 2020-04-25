@@ -11,6 +11,8 @@ services:
     networks:
       - default
       - frontend
+    security_opt:
+      - no-new-privileges
   application:
     build: .
     depends_on:
@@ -27,6 +29,8 @@ services:
     secrets:
       - database_password
       - secret_cookie_password
+    security_opt:
+      - no-new-privileges
   database:
     image: postgres
     environment:
@@ -39,6 +43,8 @@ services:
       - backend
     volumes:
       - pgdata:/var/lib/postgresql/data
+    security_opt:
+      - no-new-privileges
   worker:
     privileged: true
     build: cryptomato_worker
