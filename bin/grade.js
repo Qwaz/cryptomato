@@ -97,7 +97,7 @@ async function main() {
       };
   */
 
-  // TODO: invoke gRPC worker and get the result
+  // invoke gRPC worker and get the result
   const payload = {
     challenge_name: challengeName,
     code: code,

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import bcrypt from "bcrypt";
 
 import withSession, { NextApiRequestWithSession } from "../../lib/session";
 
@@ -76,11 +77,12 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
 
   if (errorArr.length == 0) {
     try {
+      const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
       const result = await prisma.user.create({
         data: {
           email: email,
           nickname: nickname,
-          password: password,
+          password: passwordHash,
         },
       });
 

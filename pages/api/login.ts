@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiResponse } from "next";
+import bcrypt from "bcrypt";
+
 import withSession, { NextApiRequestWithSession } from "../../lib/session";
 
 const prisma = new PrismaClient();
@@ -9,16 +11,13 @@ export default withSession(
     const { email, password } = await req.body;
 
     // TODO: hash password
-    const userArr = await prisma.user.findMany({
+    const user = await prisma.user.findOne({
       where: {
         email: email,
-        password: password,
       },
-      first: 1,
     });
-    const user = userArr[0];
 
-    if (user) {
+    if (user && bcrypt.compareSync(password, user.password)) {
       req.session.set("user", {
         isLoggedIn: true,
         id: user.id,
