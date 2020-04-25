@@ -3,6 +3,26 @@
 .dockerignore
 Dockerfile
 docker-compose.yml
-secrets
+
 cryptomato_worker/worker
 cryptomato_worker/worker_test.py
+
+##########################
+# Copied from .gitignore #
+##########################
+# IDE
+.vscode/
+.idea/
+
+# Local build files
+dev_rpc_channels/
+node_modules/
+.next/
+
+# Local secret files
+secrets/
+**/.env
+next.config.js
+
+# Do not keep database until DB scheme becomes stable
+prisma/migrations

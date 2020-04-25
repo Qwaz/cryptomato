@@ -1,16 +1,16 @@
+# IDE
 .vscode/
+.idea/
 
+# Local build files
+dev_rpc_channels/
 node_modules/
 .next/
 
 # Local secret files
-.env
+secrets/
+**/.env
 next.config.js
 
 # Do not keep database until DB scheme becomes stable
-prisma/dev.db
 prisma/migrations
-
-.idea/
-
-secrets/

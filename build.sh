@@ -1,6 +1,7 @@
 #!/bin/sh
 
-python -c "
+python3 -c "
+import binascii
 import os
 
 if not os.path.exists('secrets'):
@@ -11,7 +12,7 @@ for f in (
     'secret_cookie_password.txt',
 ):
     if not os.path.exists('secrets/' + f):
-        file('secrets/' + f, 'w').write(os.urandom(16).encode('hex') + '\n')
+        open('secrets/' + f, 'w').write(binascii.hexlify(os.urandom(16)).decode() + '\n')
 "
 
 docker-compose build
