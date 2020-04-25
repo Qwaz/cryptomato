@@ -73,7 +73,7 @@ if __name__ == '__main__':
             os.close(1)
             os.close(2)
             os.setsid()
-            os.setgroups([SANDBOX_GID, SANDBOX_GID + 1])
+            os.setgroups([SANDBOX_GID, SANDBOX_GID + 1, 1000])
             os.setresgid(SANDBOX_GID + 1, SANDBOX_GID + 1, SANDBOX_GID + 1)
             os.setresuid(SANDBOX_UID + 1, SANDBOX_UID + 1, SANDBOX_UID + 1)
             dev_null = os.open('/dev/null', os.O_RDWR, 0)
