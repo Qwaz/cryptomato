@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next",
-    "populate": "node populate",
+    "populate": "node bin/populate.js",
     "build": "next build",
     "start": "next start"
   },

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import Router, { useRouter } from "next/router";
-import { Menu, Container, Button } from "semantic-ui-react";
+import { useRouter } from "next/router";
+import { Menu, Container } from "semantic-ui-react";
 import useUser from "../lib/useUser";
 
 const Header: React.FC = () => {

@@ -21,6 +21,7 @@ export default withSession(
     if (user) {
       req.session.set("user", {
         isLoggedIn: true,
+        id: user.id,
         nickname: user.nickname,
         email: user.email,
       });

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import Router from "next/router";
 import dynamic from "next/dynamic";
-import { Container, Label, Header } from "semantic-ui-react";
+import { Container, Label, Header, Segment } from "semantic-ui-react";
 
 import Layout from "../../components/Layout";
 import LoginCheckButton from "../../components/LoginCheckButton";
@@ -22,6 +23,8 @@ type Props = {
 const prisma = new PrismaClient();
 
 const Challenge: React.FC<Props> = (props) => {
+  const [loading, setLoading] = useState(false);
+
   const [code, setCode] = useState("");
 
   const chal = props.challenge;
@@ -35,23 +38,51 @@ const Challenge: React.FC<Props> = (props) => {
     );
   }
 
+  const submitData = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const body = { challengeId: chal.id, code };
+
+      const res = await fetch(`/api/challenge/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        Router.push("/challenges");
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error);
+      setLoading(false);
+    }
+  };
+
   return (
     <Layout>
       <Container>
-        <Header as="h1" dividing>
-          {chal.name}
-          {categories}
-        </Header>
-        <p>{chal.description}</p>
+        <Segment loading={loading}>
+          <Header as="h1" dividing>
+            {chal.name}
+            {categories}
+          </Header>
+          <p>{chal.description}</p>
 
-        <Header as="h2">Code</Header>
-        <CodeEditor
-          value={code}
-          onBeforeChange={(editor, data, value) => {
-            setCode(value);
-          }}
-        />
-        <LoginCheckButton />
+          <Header as="h2">Code</Header>
+          <CodeEditor
+            value={code}
+            onBeforeChange={(editor, data, value) => {
+              setCode(value);
+            }}
+          />
+
+          <LoginCheckButton onClick={submitData} />
+        </Segment>
       </Container>
     </Layout>
   );

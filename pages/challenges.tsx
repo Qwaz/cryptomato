@@ -28,8 +28,12 @@ const Challenges: React.FC<Props> = (props) => {
       );
     }
     return (
-      <Link href="/challenge/[id]" as={`/challenge/${challenge.id}`}>
-        <Card key={challenge.id} link>
+      <Link
+        href="/challenge/[id]"
+        as={`/challenge/${challenge.id}`}
+        key={challenge.id}
+      >
+        <Card link>
           <Card.Content>
             <Card.Header>{challenge.name}</Card.Header>
             <Card.Description>{challenge.description}</Card.Description>

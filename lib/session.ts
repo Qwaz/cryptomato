@@ -17,6 +17,7 @@ export default function withSession(handler: NextApiHandler) {
 export type User =
   | {
       isLoggedIn: true;
+      id: number;
       nickname: string;
       email: string;
     }

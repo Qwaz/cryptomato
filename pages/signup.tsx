@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import fetch from "isomorphic-unfetch";
 import Router from "next/router";
-import Layout from "../components/Layout";
 import { Form, Header, Container, Button, Message } from "semantic-ui-react";
+
+import Layout from "../components/Layout";
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);

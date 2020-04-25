@@ -3,6 +3,8 @@
 node_modules/
 .next/
 
+# Local secret files
+.env
 next.config.js
 
 # Do not keep database until DB scheme becomes stable

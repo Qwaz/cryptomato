@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+
 import withSession, { NextApiRequestWithSession } from "../../lib/session";
 
 const prisma = new PrismaClient();
@@ -18,7 +19,9 @@ export default async function handle(
 }
 
 // GET /api/user
+// Always return valid User type
 async function handleGET(req: NextApiRequestWithSession, res: NextApiResponse) {
+  // TODO: check whether the user still exists
   const user = req.session.get("user");
   if (user?.isLoggedIn) {
     res.json(user);
@@ -82,7 +85,6 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       });
 
       // TODO: login a user
-      console.log(result);
 
       res.status(200).end();
       return;
