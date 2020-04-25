@@ -73,7 +73,6 @@ if __name__ == '__main__':
                 prctl.CAP_SETGID,
                 prctl.CAP_CHOWN,
                 prctl.CAP_KILL,
-                prctl.CAP_AUDIT_WRITE,
             }
             caps_to_clear = set(range(1024)).difference(caps_to_keep)
             _prctl.set_caps([], [], [], list(caps_to_clear), list(caps_to_clear), list(caps_to_clear))
