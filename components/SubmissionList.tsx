@@ -11,6 +11,7 @@ const SubmissionList: React.FC<Props> = (props) => {
   const submissionList = props.submissions.map((submission) => {
     let statusCell;
 
+    // TODO: refresh for pending and grading request
     switch (submission.status) {
       case "PENDING": {
         statusCell = <Table.Cell>Pending</Table.Cell>;

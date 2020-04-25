@@ -1,4 +1,5 @@
 import React from "react";
+import { Challenge } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Error from "next/error";
 import { Container } from "semantic-ui-react";
@@ -9,16 +10,15 @@ import {
   findChallengeWithStringId,
   SerializableSubmissionListElem,
   findSerializableSubmissions,
-  ChallengeWithCategories,
 } from "../../../lib/find";
 import SubmissionList from "../../../components/SubmissionList";
 
 type Props = {
-  challenge: ChallengeWithCategories | null;
+  challenge: Challenge | null;
   submissions: SerializableSubmissionListElem[];
 };
 
-const Challenge: React.FC<Props> = (props) => {
+const Submissions: React.FC<Props> = (props) => {
   if (props.challenge === null) {
     return <Error statusCode={404} />;
   }
@@ -57,4 +57,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   };
 };
 
-export default Challenge;
+export default Submissions;

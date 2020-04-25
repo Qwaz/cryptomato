@@ -4,19 +4,16 @@ import {
   ChallengeGetPayload,
   SubmissionGetPayload,
   FindManySubmissionArgs,
+  ChallengeInclude,
+  Subset,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export type ChallengeWithCategories = ChallengeGetPayload<{
-  include: {
-    categories: true;
-  };
-}>;
-
-export function findChallengeWithStringId(
-  challengeId: string | string[]
-): ChallengeClient<ChallengeWithCategories | null> {
+export function findChallengeWithStringId<T extends ChallengeInclude>(
+  challengeId: string | string[],
+  include?: T
+): ChallengeClient<ChallengeGetPayload<{ include: T }> | null> {
   if (challengeId instanceof Array || !challengeId.match(/^[1-9]\d*$/)) {
     return null;
   }
@@ -26,9 +23,7 @@ export function findChallengeWithStringId(
     where: {
       id: challengeIdNumber,
     },
-    include: {
-      categories: true,
-    },
+    include,
   });
 }
 

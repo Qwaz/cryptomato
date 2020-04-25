@@ -4,7 +4,7 @@ import Link from "next/link";
 
 type Props = {
   id: number;
-  active: string;
+  active: "problem" | "solvers" | "submissions";
 };
 
 const ChallengeMenu: React.FC<Props> = (props) => {
@@ -12,6 +12,12 @@ const ChallengeMenu: React.FC<Props> = (props) => {
     <Menu pointing secondary>
       <Link href="/challenges/[id]" as={`/challenges/${props.id}`}>
         <Menu.Item name="problem" active={props.active === "problem"} />
+      </Link>
+      <Link
+        href="/challenges/[id]/solvers"
+        as={`/challenges/${props.id}/solvers`}
+      >
+        <Menu.Item name="solvers" active={props.active === "solvers"} />
       </Link>
       <Link
         href="/challenges/[id]/submissions"

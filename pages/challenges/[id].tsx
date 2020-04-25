@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Error from "next/error";
 import Router from "next/router";
@@ -8,17 +9,18 @@ import { Container, Label, Header, Segment } from "semantic-ui-react";
 import Layout from "../../components/Layout";
 import LoginCheckButton from "../../components/LoginCheckButton";
 import ChallengeMenu from "../../components/ChallengeMenu";
-import {
-  findChallengeWithStringId,
-  ChallengeWithCategories,
-} from "../../lib/find";
+import { findChallengeWithStringId } from "../../lib/find";
 
 const CodeEditor = dynamic(import("../../components/CodeEditor"), {
   ssr: false,
 });
 
 type Props = {
-  challenge: ChallengeWithCategories | null;
+  challenge: ChallengeGetPayload<{
+    include: {
+      categories: true;
+    };
+  }> | null;
 };
 
 const Challenge: React.FC<Props> = (props) => {
@@ -98,7 +100,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   return {
     props: {
-      challenge: await findChallengeWithStringId(context.params.id as string),
+      challenge: await findChallengeWithStringId(context.params.id, {
+        categories: true,
+      }),
     },
   };
 };
