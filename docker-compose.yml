@@ -30,11 +30,11 @@ services:
       - worker
     links:
       - database
+      - worker
     networks:
       - frontend
       - backend
-    volumes:
-      - rpc_channels:/var/run/cryptomato
+      - sandbox
     secrets:
       - database_password
       - secret_cookie_password
@@ -74,15 +74,12 @@ services:
     build: cryptomato_worker
     networks:
       - sandbox
-    volumes:
-      - rpc_channels:/var/run/cryptomato
 secrets:
   database_password:
     file: secrets/database_password.txt
   secret_cookie_password:
     file: secrets/secret_cookie_password.txt
 volumes:
-  rpc_channels: {}
   pgdata: {}
 networks:
   frontend:

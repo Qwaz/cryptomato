@@ -42,10 +42,8 @@ def serve_misc_server():
         futures.ThreadPoolExecutor(max_workers=max(1, multiprocessing.cpu_count() // 2))
     )
     private_api_pb2_grpc.add_ManagerServicer_to_server(ManagerServicer(), manager_server)
-    manager_server.add_insecure_port('unix:///var/run/cryptomato/manager.sock')
+    manager_server.add_insecure_port('0.0.0.0:10000')
     manager_server.start()
-    os.chown('/var/run/cryptomato/manager.sock', os.getuid(), 1000)
-    os.chmod('/var/run/cryptomato/manager.sock', 0o600)
     print('manager_server started!')
 
     eval_server.wait_for_termination()
@@ -60,27 +58,22 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'misc_server':
             serve_misc_server()
     else:
-        print('starting worker...')
+        print('starting worker servers...')
         if not os.path.exists('/var/run/cryptomato'):
             os.mkdir('/var/run/cryptomato')
         os.chmod('/var/run/cryptomato', 0o1777)
         pid1 = os.fork()
         if not pid1:
-            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato_worker.worker', 'sandbox_server')
+            os.setsid()
+            os.execl('/usr/bin/python3', '/usr/bin/python3', '-u', '-m', 'cryptomato_worker.worker', 'sandbox_server')
             sys.exit(0)
         pid2 = os.fork()
         if not pid2:
-            os.close(0)
-            os.close(1)
-            os.close(2)
             os.setsid()
             os.setgroups([SANDBOX_GID, SANDBOX_GID + 1, 1000])
             os.setresgid(SANDBOX_GID + 1, SANDBOX_GID + 1, SANDBOX_GID + 1)
             os.setresuid(SANDBOX_UID + 1, SANDBOX_UID + 1, SANDBOX_UID + 1)
-            dev_null = os.open('/dev/null', os.O_RDWR, 0)
-            os.dup2(dev_null, 1)
-            os.dup2(dev_null, 2)
-            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato_worker.worker', 'misc_server')
+            os.execl('/usr/bin/python3', '/usr/bin/python3', '-u', '-m', 'cryptomato_worker.worker', 'misc_server')
             sys.exit(0)
 
 
