@@ -23,6 +23,7 @@ services:
       - backend
     volumes:
       - rpc_channels:/var/run/cryptomato
+      - prisma_migrations:/usr/app/prisma/migrations
     secrets:
       - database_password
       - secret_cookie_password
@@ -53,6 +54,7 @@ secrets:
 volumes:
   rpc_channels: {}
   pgdata: {}
+  prisma_migrations: {}
 networks:
   frontend:
     internal: true

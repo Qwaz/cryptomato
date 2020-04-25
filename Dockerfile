@@ -10,7 +10,7 @@ RUN npm install --save-dev typescript @types/react @types/node
 
 COPY ./prisma ./prisma
 RUN npx prisma generate
-RUN mkdir prisma/migrations && chown root:node prisma/migrations && chmod 770 prisma/migrations
+VOLUME /usr/app/prisma/migrations
 
 COPY . ./
 RUN rm -rf worker && mkdir worker
@@ -22,6 +22,5 @@ RUN npm run build
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /
 
-USER node
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["pm2-runtime", "start", "npm", "--", "start"]
