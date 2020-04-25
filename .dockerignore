@@ -4,5 +4,5 @@
 Dockerfile
 docker-compose.yml
 secrets
-worker/worker
-worker/worker_test.py
+cryptomato_worker/worker
+cryptomato_worker/worker_test.py

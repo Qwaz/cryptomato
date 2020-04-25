@@ -66,7 +66,7 @@ if __name__ == '__main__':
         os.chmod('/var/run/cryptomato', 0o1777)
         pid1 = os.fork()
         if not pid1:
-            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato.worker', 'sandbox_server')
+            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato_worker.worker', 'sandbox_server')
             sys.exit(0)
         pid2 = os.fork()
         if not pid2:
@@ -80,7 +80,7 @@ if __name__ == '__main__':
             dev_null = os.open('/dev/null', os.O_RDWR, 0)
             os.dup2(dev_null, 1)
             os.dup2(dev_null, 2)
-            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato.worker', 'misc_server')
+            os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato_worker.worker', 'misc_server')
             sys.exit(0)
 
 

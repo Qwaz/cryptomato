@@ -42,7 +42,7 @@ RUN apt-get update -y \
 RUN pip3 install wheel
 RUN pip3 install grpcio grpcio-tools
 
-COPY . /srv/cryptomato
+COPY . /cryptomato_worker
 
-WORKDIR /srv/
-ENTRYPOINT ["/usr/bin/python3", "-u", "-m", "cryptomato.worker"]
+WORKDIR /
+ENTRYPOINT ["/usr/bin/python3", "-u", "-m", "cryptomato_worker.worker"]

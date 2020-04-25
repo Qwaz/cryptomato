@@ -41,7 +41,7 @@ services:
       - pgdata:/var/lib/postgresql/data
   worker:
     privileged: true
-    build: worker
+    build: cryptomato_worker
     networks:
       - sandbox
     volumes:
