@@ -12,3 +12,5 @@ prisma/dev.db
 prisma/migrations
 
 .idea/
+
+secrets/

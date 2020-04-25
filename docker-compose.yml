@@ -1,9 +1,11 @@
-version: '3'
+version: '3.1'
 services:
   web:
     build: nginx
     ports:
       - "8080:80"
+    depends_on:
+      - application
     links:
       - application
     networks:
@@ -11,10 +13,9 @@ services:
       - frontend
   application:
     build: .
-    environment:
-      DATABASE_URL: "postgresql://cryptomato:cryptomato@database:5432/postgres?schema=cryptomato"
-    expose:
-      - "3000"
+    depends_on:
+      - database
+      - worker
     links:
       - database
     networks:
@@ -22,16 +23,21 @@ services:
       - backend
     volumes:
       - rpc_channels:/var/run/cryptomato
+    secrets:
+      - database_password
+      - secret_cookie_password
   database:
     image: postgres
     environment:
       POSTGRES_USER: cryptomato
-      POSTGRES_PASSWORD: cryptomato
+      POSTGRES_PASSWORD_FILE: /run/secrets/database_password
       POSTGRES_DB: cryptomato
-    expose:
-      - "5432"
+    secrets:
+      - database_password
     networks:
       - backend
+    volumes:
+      - pgdata:/var/lib/postgresql/data
   worker:
     privileged: true
     build: worker
@@ -39,8 +45,14 @@ services:
       - sandbox
     volumes:
       - rpc_channels:/var/run/cryptomato
+secrets:
+  database_password:
+    file: secrets/database_password.txt
+  secret_cookie_password:
+    file: secrets/secret_cookie_password.txt
 volumes:
   rpc_channels: {}
+  pgdata: {}
 networks:
   frontend:
     internal: true

@@ -9,7 +9,8 @@ RUN npm install --production --no-package-lock
 RUN npm install --save-dev typescript @types/react @types/node
 
 COPY ./prisma ./prisma
-RUN npm install --production --no-package-lock @prisma/client
+RUN npx prisma generate
+RUN mkdir prisma/migrations && chown root:node prisma/migrations && chmod 770 prisma/migrations
 
 COPY . ./
 RUN rm -rf worker && mkdir worker
@@ -18,5 +19,9 @@ COPY ./worker/protos ./worker/protos
 
 RUN npm run build
 
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN ln -s /usr/local/bin/docker-entrypoint.sh /
+
 USER node
-ENTRYPOINT ["pm2-runtime", "start", "npm", "--", "start"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["pm2-runtime", "start", "npm", "--", "start"]
