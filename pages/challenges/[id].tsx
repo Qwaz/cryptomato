@@ -1,31 +1,34 @@
 import React, { useState } from "react";
-import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import Error from "next/error";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 import { Container, Label, Header, Segment } from "semantic-ui-react";
 
 import Layout from "../../components/Layout";
 import LoginCheckButton from "../../components/LoginCheckButton";
+import ChallengeMenu from "../../components/ChallengeMenu";
+import {
+  findChallengeWithStringId,
+  ChallengeWithCategories,
+} from "../../lib/find";
 
 const CodeEditor = dynamic(import("../../components/CodeEditor"), {
   ssr: false,
 });
 
 type Props = {
-  challenge: ChallengeGetPayload<{
-    include: {
-      categories: true;
-    };
-  }>;
+  challenge: ChallengeWithCategories | null;
 };
-
-const prisma = new PrismaClient();
 
 const Challenge: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState(false);
 
   const [code, setCode] = useState("");
+
+  if (props.challenge === null) {
+    return <Error statusCode={404} />;
+  }
 
   const chal = props.challenge;
 
@@ -66,6 +69,8 @@ const Challenge: React.FC<Props> = (props) => {
   return (
     <Layout>
       <Container>
+        <ChallengeMenu id={chal.id} active="problem" />
+
         <Segment loading={loading}>
           <Header as="h1" dividing>
             {chal.name}
@@ -91,22 +96,11 @@ const Challenge: React.FC<Props> = (props) => {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
-  const challengeIdString = context.params.id as string;
-  if (challengeIdString.match(/^[1-9]\d*$/)) {
-    const challengeIdNumber = parseInt(challengeIdString);
-    const challenge = await prisma.challenge.findOne({
-      where: {
-        id: challengeIdNumber,
-      },
-      include: {
-        categories: true,
-      },
-    });
-    if (challenge) {
-      return { props: { challenge } };
-    }
-  }
-  throw new Error("Invalid path");
+  return {
+    props: {
+      challenge: await findChallengeWithStringId(context.params.id as string),
+    },
+  };
 };
 
 export default Challenge;
