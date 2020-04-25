@@ -55,8 +55,6 @@ services:
     cap_drop:
       - ALL
     cap_add:
-      - CAP_SETPCAP
-      - CAP_AUDIT_WRITE
       - CAP_CHOWN
       - CAP_DAC_OVERRIDE
       - CAP_FOWNER
