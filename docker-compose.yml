@@ -74,6 +74,8 @@ services:
     build: cryptomato_worker
     networks:
       - sandbox
+    security_opt:
+      - no-new-privileges
 secrets:
   database_password:
     file: secrets/database_password.txt
