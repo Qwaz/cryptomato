@@ -3,7 +3,7 @@ services:
   web:
     build: nginx
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - application
     links:
@@ -11,6 +11,16 @@ services:
     networks:
       - default
       - frontend
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_SETPCAP
+      - CAP_AUDIT_WRITE
+      - CAP_CHOWN
+      - CAP_DAC_OVERRIDE
+      - CAP_FOWNER
+      - CAP_SETUID
+      - CAP_SETGID
     security_opt:
       - no-new-privileges
   application:
@@ -25,10 +35,14 @@ services:
       - backend
     volumes:
       - rpc_channels:/var/run/cryptomato
-      - prisma_migrations:/usr/app/prisma/migrations
     secrets:
       - database_password
       - secret_cookie_password
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_SETPCAP
+      - CAP_AUDIT_WRITE
     security_opt:
       - no-new-privileges
   database:
@@ -43,6 +57,16 @@ services:
       - backend
     volumes:
       - pgdata:/var/lib/postgresql/data
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_SETPCAP
+      - CAP_AUDIT_WRITE
+      - CAP_CHOWN
+      - CAP_DAC_OVERRIDE
+      - CAP_FOWNER
+      - CAP_SETUID
+      - CAP_SETGID
     security_opt:
       - no-new-privileges
   worker:
@@ -60,7 +84,6 @@ secrets:
 volumes:
   rpc_channels: {}
   pgdata: {}
-  prisma_migrations: {}
 networks:
   frontend:
     internal: true
