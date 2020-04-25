@@ -85,8 +85,8 @@ if __name__ == '__main__':
 
 
         def sigterm_handler(_signo, _stack_frame):
-            os.kill(pid1, -9)
-            os.kill(pid2, -9)
+            os.kill(pid1, 9)
+            os.kill(pid2, 9)
             sys.exit(0)
 
 
