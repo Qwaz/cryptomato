@@ -60,6 +60,7 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'misc_server':
             serve_misc_server()
     else:
+        print('starting worker...')
         if not os.path.exists('/var/run/cryptomato'):
             os.mkdir('/var/run/cryptomato')
         os.chmod('/var/run/cryptomato', 0o1777)

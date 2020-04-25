@@ -45,4 +45,4 @@ RUN pip3 install grpcio grpcio-tools
 COPY . /srv/cryptomato
 
 WORKDIR /srv/
-ENTRYPOINT ["/usr/bin/python3", "-m", "cryptomato.worker"]
+ENTRYPOINT ["/usr/bin/python3", "-u", "-m", "cryptomato.worker"]
