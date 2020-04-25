@@ -27,11 +27,12 @@ const Header: React.FC = () => {
 
   return (
     <nav>
-      <Menu style={{ marginBottom: "6em" }} color="green" inverted>
+      <Menu style={{ marginBottom: "4em" }} size="large" color="green" inverted>
         <Container>
-          <Menu.Item header>Cryptomato</Menu.Item>
           <Link href="/">
-            <Menu.Item name="home" active={matches("/")} />
+            <Menu.Item header style={{ fontSize: "20px" }}>
+              🔐 Cryptomato 🍅
+            </Menu.Item>
           </Link>
           <Link href="/challenges">
             <Menu.Item name="challenges" active={startsWith("/challenges")} />
