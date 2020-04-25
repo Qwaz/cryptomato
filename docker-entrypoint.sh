@@ -15,4 +15,4 @@ su --preserve-environment -c 'npx prisma migrate up --experimental' node
 su --preserve-environment -c 'npm run populate' node
 
 ARGV=$@
-exec su --preserve-environment -c "exec $ARGV" node
+su --preserve-environment -c "exec $ARGV" node
