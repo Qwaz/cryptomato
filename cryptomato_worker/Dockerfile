@@ -44,5 +44,7 @@ RUN pip3 install grpcio grpcio-tools
 
 COPY . /cryptomato_worker
 
+EXPOSE 10000
+
 WORKDIR /
 ENTRYPOINT ["/usr/bin/python3", "-u", "-m", "cryptomato_worker.worker"]

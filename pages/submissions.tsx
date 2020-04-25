@@ -57,6 +57,10 @@ const Submissions: React.FC<Props> = (props) => {
         statusCell = <Table.Cell negative>Runtime Error</Table.Cell>;
         break;
       }
+      case "UNKNOWN_ERROR": {
+        statusCell = <Table.Cell negative>Unknown Error</Table.Cell>;
+        break;
+      }
     }
     return (
       <Table.Row key={submission.id}>

@@ -1,12 +1,29 @@
 const { PrismaClient, SubmissionStatus } = require("@prisma/client");
 
+// gRPC setup
+const PROTO_PATH = __dirname + "/../cryptomato_worker/protos/private_api.proto";
+const ENDPOINT_PATH =
+  process.env.NODE_ENV === "production" ? "worker:10000" : "127.0.0.1:3001";
+
+const grpc = require("grpc");
+const protoLoader = require("@grpc/proto-loader");
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+const package = grpc.loadPackageDefinition(packageDefinition);
+const grpcClient = new package.Manager(
+  ENDPOINT_PATH,
+  grpc.credentials.createInsecure()
+);
+
+// start of the script
 const prisma = new PrismaClient();
 const submissionId = parseInt(process.argv[2]);
-
-function choose(choices) {
-  var index = Math.floor(Math.random() * choices.length);
-  return choices[index];
-}
 
 const upsertSolveLog = async (userId, challengeId, submissionId) => {
   await prisma.solveLog.upsert({
@@ -39,7 +56,11 @@ const upsertSolveLog = async (userId, challengeId, submissionId) => {
 
 async function main() {
   // first, set the state to grading
-  const { code } = await prisma.submission.update({
+  const {
+    code,
+    userId,
+    challenge: { id: challengeId, name: challengeName },
+  } = await prisma.submission.update({
     data: {
       status: SubmissionStatus.GRADING,
     },
@@ -48,6 +69,13 @@ async function main() {
     },
     select: {
       code: true,
+      userId: true,
+      challenge: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -70,72 +98,70 @@ async function main() {
   */
 
   // TODO: invoke gRPC worker and get the result
-  const result = choose([
-    {
-      type: "success",
-      solved: true,
-      detail: {},
-      user_code_output: "Is this success?",
-    },
-    {
-      type: "success",
-      solved: false,
-      detail: {},
-      user_code_output: "You failed",
-    },
-    {
-      type: "Exception",
-      message: "Oh no exception",
-    },
-    {
-      type: "CalledProcessError",
-      message: "The second exception",
-    },
-  ]);
+  const payload = {
+    challenge_name: challengeName,
+    code: code,
+  };
+  grpcClient.evaluation(payload, async function (err, reply) {
+    if (err) {
+      // unknown error
+      console.log(err);
 
-  // convert gRPC result to DB query
-  let status;
-  let output;
-
-  if (result.type == "success") {
-    output = result.user_code_output;
-    if (result.solved) {
-      status = SubmissionStatus.CORRECT;
+      await prisma.submission.update({
+        data: {
+          status: SubmissionStatus.UNKNOWN_ERROR,
+        },
+        select: {
+          id: true,
+        },
+        where: {
+          id: submissionId,
+        },
+      });
     } else {
-      status = SubmissionStatus.WRONG_ANSWER;
+      // convert gRPC result to DB query
+      let status;
+      let output;
+
+      const result = JSON.parse(reply.result);
+      console.log(result);
+      if (result.type === "success") {
+        output = result.user_code_output;
+        if (result.solved) {
+          status = SubmissionStatus.CORRECT;
+        } else {
+          status = SubmissionStatus.WRONG_ANSWER;
+        }
+      } else {
+        status = SubmissionStatus.RUNTIME_ERROR;
+        output = result.message;
+      }
+
+      await prisma.submission.update({
+        data: {
+          status: status,
+          output: output,
+        },
+        select: {
+          id: true,
+        },
+        where: {
+          id: submissionId,
+        },
+      });
+
+      // update solve log
+      if (status == SubmissionStatus.CORRECT) {
+        await upsertSolveLog(userId, challengeId, submissionId);
+      }
     }
-  } else {
-    status = SubmissionStatus.RUNTIME_ERROR;
-    output = result.message;
-  }
 
-  const { userId, challengeId } = await prisma.submission.update({
-    data: {
-      status: status,
-      output: output,
-    },
-    select: {
-      userId: true,
-      challengeId: true,
-    },
-    where: {
-      id: submissionId,
-    },
-  });
-
-  // update solve log
-  if (status == SubmissionStatus.CORRECT) {
-    await upsertSolveLog(userId, challengeId, submissionId);
-  }
-
-  console.log(`Finished grading submission ${submissionId}`);
-}
-
-main()
-  .catch((e) => {
-    console.log(e);
-    throw e;
-  })
-  .finally(async () => {
+    console.log(`Finished grading submission ${submissionId}`);
     await prisma.disconnect();
   });
+}
+
+main().catch((e) => {
+  console.log(e);
+  throw e;
+});

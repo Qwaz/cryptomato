@@ -39,7 +39,7 @@ export default withSession(
 
     exec(`node bin/grade.js ${submission.id}`, (error, stdout, stderr) => {
       if (error) {
-        console.error(`grading error: ${error}`);
+        console.error(`grading error: ${error.message}`);
         return;
       }
     });

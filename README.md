@@ -26,15 +26,14 @@ npm run populate
 Then, build the worker image and run it.
 
 ```shell
-./build.sh
-mkdir dev_rpc_channels
-docker run --rm --privileged --name cryptomato-worker -v $PWD/dev_rpc_channels:/var/run/cryptomato -d cryptomato_worker
+bin/build.sh
+docker run --rm --privileged --name cryptomato-worker -p 127.0.0.1:3001:10000 -d cryptomato_worker
 ```
 
 Finally, run `npm run dev` to open a dev server at `localhost:3000`.
 
 ### Production
 
-Run `./build.sh` and then `./run.sh`.
+Run `bin/build.sh` and then `bin/run.sh`.
 
 TODO: setup certificate

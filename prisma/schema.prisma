@@ -19,6 +19,7 @@ enum SubmissionStatus {
   CORRECT
   WRONG_ANSWER
   RUNTIME_ERROR
+  UNKNOWN_ERROR
 }
 
 model Submission {

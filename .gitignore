@@ -3,7 +3,6 @@
 .idea/
 
 # Local build files
-dev_rpc_channels/
 node_modules/
 .next/
 
