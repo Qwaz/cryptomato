@@ -1,49 +1,22 @@
-FROM ubuntu:18.04
+FROM node:14
 
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-        bison \
-        ca-certificates \
-        flex \
-        g++ \
-        gcc \
-        git \
-        libprotobuf-dev \
-        libprotobuf10 \
-        libnl-route-3-dev \
-        libnl-route-3-200 \
-        make \
-        pkg-config \
-        protobuf-compiler \
-    && git clone --depth=1 --branch=2.9 https://github.com/google/nsjail.git /nsjail \
-    && cd /nsjail \
-    && make \
-    && mv /nsjail/nsjail /usr/sbin \
-    && apt-get remove --purge -y \
-        bison \
-        ca-certificates \
-        flex \
-        g++ \
-        gcc \
-        git \
-        libprotobuf-dev \
-        libnl-route-3-dev \
-        make \
-        pkg-config \
-        protobuf-compiler \
-        $(apt-mark showauto) \
-    && apt-get install -y --no-install-recommends \
-        libprotobuf10 \
-        libnl-route-3-200 \
-        python3 python3-pip python3-setuptools gcc g++ python3-dev \
-    && cd / \
-    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ~/.cache/pip /nsjail
+WORKDIR /usr/app
 
-RUN pip3 install wheel
-RUN pip3 install grpcio grpcio-tools
+RUN npm install --global pm2 cross-env
 
-COPY . /cryptomato
+COPY ./package*.json ./
+RUN npm install --production --no-package-lock
+RUN npm install --save-dev typescript @types/react @types/node
 
-# TODO : modify entrypoint?
-WORKDIR /
-ENTRYPOINT ["/usr/bin/python3", "-m", "cryptomato.worker"]
+COPY ./prisma ./prisma
+RUN npm install --production --no-package-lock @prisma/client
+
+COPY . ./
+RUN rm -rf worker && mkdir worker
+COPY ./worker/exposed_lib ./worker/exposed_lib
+COPY ./worker/protos ./worker/protos
+
+RUN npm run build
+
+USER node
+ENTRYPOINT ["pm2-runtime", "start", "npm", "--", "start"]

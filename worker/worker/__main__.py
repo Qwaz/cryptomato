@@ -44,6 +44,7 @@ def serve_misc_server():
     private_api_pb2_grpc.add_ManagerServicer_to_server(ManagerServicer(), manager_server)
     manager_server.add_insecure_port('unix:///var/run/cryptomato/manager.sock')
     manager_server.start()
+    os.chown('/var/run/cryptomato/manager.sock', os.getuid(), 1000)
     os.chmod('/var/run/cryptomato/manager.sock', 0o600)
     print('manager_server started!')
 

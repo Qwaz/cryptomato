@@ -1,6 +1,6 @@
 // copy this file as `next.config.js` and change values according to your setup
 module.exports = {
   env: {
-    SECRET_COOKIE_PASSWORD: "secret cookie password",
+    SECRET_COOKIE_PASSWORD: "__SECRET_COOKIE_PASSWORD__",
   },
 };
