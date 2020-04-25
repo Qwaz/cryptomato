@@ -1,6 +1,7 @@
 import logging
 import multiprocessing
 import os
+import signal
 import sys
 from concurrent import futures
 
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     else:
         if not os.path.exists('/var/run/cryptomato'):
             os.mkdir('/var/run/cryptomato')
-            os.chmod('/var/run/cryptomato', 0o1777)
+        os.chmod('/var/run/cryptomato', 0o1777)
         pid1 = os.fork()
         if not pid1:
             os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato.worker', 'sandbox_server')
@@ -79,5 +80,15 @@ if __name__ == '__main__':
             os.dup2(dev_null, 2)
             os.execl('/usr/bin/python3', '/usr/bin/python3', '-m', 'cryptomato.worker', 'misc_server')
             sys.exit(0)
+
+
+        def sigterm_handler(_signo, _stack_frame):
+            os.kill(pid1, -9)
+            os.kill(pid2, -9)
+            sys.exit(0)
+
+
+        signal.signal(signal.SIGTERM, sigterm_handler)
+
         os.waitpid(pid1, 0)
         os.waitpid(pid2, 0)
