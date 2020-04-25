@@ -34,7 +34,10 @@ const Header: React.FC = () => {
             <Menu.Item name="home" active={matches("/")} />
           </Link>
           <Link href="/challenges">
-            <Menu.Item name="challenges" active={startsWith("/challenge")} />
+            <Menu.Item name="challenges" active={startsWith("/challenges")} />
+          </Link>
+          <Link href="/submissions">
+            <Menu.Item name="submissions" active={startsWith("/submissions")} />
           </Link>
           {user?.isLoggedIn && (
             <Menu.Menu position="right">

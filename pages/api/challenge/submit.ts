@@ -1,9 +1,7 @@
 import { exec } from "child_process";
 import { PrismaClient, SubmissionStatus } from "@prisma/client";
-import { NextApiResponse, NextApiRequest } from "next";
-import fetch from "isomorphic-unfetch";
+import { NextApiResponse } from "next";
 
-import { User } from "../../../lib/session";
 import withSession, { NextApiRequestWithSession } from "../../../lib/session";
 
 const prisma = new PrismaClient();

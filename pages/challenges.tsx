@@ -1,11 +1,10 @@
 import React from "react";
 import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import Router from "next/router";
+import Link from "next/link";
 import { Container, Card, Rating, Label } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
-import Link from "next/link";
 
 type Props = {
   challenges: ChallengeGetPayload<{
@@ -29,8 +28,8 @@ const Challenges: React.FC<Props> = (props) => {
     }
     return (
       <Link
-        href="/challenge/[id]"
-        as={`/challenge/${challenge.id}`}
+        href="/challenges/[id]"
+        as={`/challenges/${challenge.id}`}
         key={challenge.id}
       >
         <Card link>
@@ -61,15 +60,15 @@ const Challenges: React.FC<Props> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const pages = await prisma.challenge.findMany({
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const challenges = await prisma.challenge.findMany({
     include: {
       categories: true,
     },
   });
 
   return {
-    props: { challenges: pages },
+    props: { challenges },
   };
 };
 

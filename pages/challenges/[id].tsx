@@ -88,7 +88,9 @@ const Challenge: React.FC<Props> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
   const challengeIdString = context.params.id as string;
   if (challengeIdString.match(/^[1-9]\d*$/)) {
     const challengeIdNumber = parseInt(challengeIdString);
