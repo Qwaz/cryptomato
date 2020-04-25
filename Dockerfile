@@ -13,9 +13,9 @@ RUN npx prisma generate
 VOLUME /usr/app/prisma/migrations
 
 COPY . ./
-RUN rm -rf worker && mkdir worker
-COPY ./worker/exposed_lib ./worker/exposed_lib
-COPY ./worker/protos ./worker/protos
+RUN rm -rf cryptomato_worker && mkdir cryptomato_worker
+COPY ./cryptomato_worker/exposed_lib ./cryptomato_worker/exposed_lib
+COPY ./cryptomato_worker/protos ./cryptomato_worker/protos
 
 RUN npm run build
 
