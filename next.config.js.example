@@ -1,0 +1,5 @@
+module.exports = {
+  env: {
+    SECRET_COOKIE_PASSWORD: "set secret value for cookie",
+  },
+};
