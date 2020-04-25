@@ -58,17 +58,33 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'misc_server':
             serve_misc_server()
     else:
+        import prctl, _prctl
+
         print('starting worker servers...')
         if not os.path.exists('/var/run/cryptomato'):
             os.mkdir('/var/run/cryptomato')
         os.chmod('/var/run/cryptomato', 0o1777)
         pid1 = os.fork()
         if not pid1:
+            prctl.set_pdeathsig(signal.SIGKILL)
+            # clear some CAP_INHERITABLE
+            caps_to_keep = {
+                prctl.CAP_SETUID,
+                prctl.CAP_SETGID,
+                prctl.CAP_CHOWN,
+                prctl.CAP_KILL,
+                prctl.CAP_AUDIT_WRITE,
+            }
+            caps_to_clear = set(range(1024)).difference(caps_to_keep)
+            _prctl.set_caps([], [], [], list(caps_to_clear), list(caps_to_clear), list(caps_to_clear))
             os.setsid()
             os.execl('/usr/bin/python3', '/usr/bin/python3', '-u', '-m', 'cryptomato_worker.worker', 'sandbox_server')
             sys.exit(0)
         pid2 = os.fork()
         if not pid2:
+            prctl.set_pdeathsig(signal.SIGKILL)
+            # clear all CAP_INHERITABLE
+            _prctl.set_caps([], [], [], [], [], list(range(1024)))
             os.setsid()
             os.setgroups([SANDBOX_GID, SANDBOX_GID + 1, 1000])
             os.setresgid(SANDBOX_GID + 1, SANDBOX_GID + 1, SANDBOX_GID + 1)
@@ -76,10 +92,12 @@ if __name__ == '__main__':
             os.execl('/usr/bin/python3', '/usr/bin/python3', '-u', '-m', 'cryptomato_worker.worker', 'misc_server')
             sys.exit(0)
 
+        os.setgroups([])
+        os.setresgid(SANDBOX_GID + 2000, SANDBOX_GID + 2000, SANDBOX_GID + 2000)
+        os.setresuid(SANDBOX_UID + 2000, SANDBOX_UID + 2000, SANDBOX_UID + 2000)
+
 
         def sigterm_handler(_signo, _stack_frame):
-            os.kill(pid1, 9)
-            os.kill(pid2, 9)
             sys.exit(0)
 
 

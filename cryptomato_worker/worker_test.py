@@ -4,7 +4,7 @@ import grpc
 
 
 def test(challenge_name, code):
-    with grpc.insecure_channel('unix:///var/run/cryptomato/manager.sock') as channel:
+    with grpc.insecure_channel('127.0.0.1:10000') as channel:
         stub = private_api_pb2_grpc.ManagerStub(channel)
         response = stub.Evaluation(private_api_pb2.EvaluationRequest(challenge_name=challenge_name, code=code))
         channel.close()

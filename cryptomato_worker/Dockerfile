@@ -42,6 +42,13 @@ RUN apt-get update -y \
 RUN pip3 install wheel
 RUN pip3 install grpcio grpcio-tools
 
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libcap-dev \
+    && pip3 install python-prctl \
+    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ~/.cache/pip
+
 COPY . /cryptomato_worker
 
 EXPOSE 10000
