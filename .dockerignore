@@ -19,7 +19,7 @@ node_modules/
 .next/
 
 # Local secret files
-secrets/
+secrets/database_password.txt
 **/.env
 next.config.js
 

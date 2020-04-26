@@ -18,7 +18,7 @@ COPY ./cryptomato_worker/exposed_lib ./cryptomato_worker/exposed_lib
 COPY ./cryptomato_worker/protos ./cryptomato_worker/protos
 COPY ./cryptomato_worker/challenges ./cryptomato_worker/challenges
 
-RUN SECRET_COOKIE_PASSWORD=$(cat /run/secrets/secret_cookie_password) npm run build
+RUN SECRET_COOKIE_PASSWORD=$(cat ./secrets/secret_cookie_password.txt) npm run build && rm -rf secrets
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /
