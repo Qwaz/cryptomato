@@ -6,7 +6,8 @@ From homework 6.2.
 
 categories = [
   "assignment",
-  "ind-cpa"
+  "dsa",
+  "key-generation"
 ]
 
 level = 1
