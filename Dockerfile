@@ -16,6 +16,7 @@ COPY . ./
 RUN rm -rf cryptomato_worker && mkdir cryptomato_worker
 COPY ./cryptomato_worker/exposed_lib ./cryptomato_worker/exposed_lib
 COPY ./cryptomato_worker/protos ./cryptomato_worker/protos
+COPY ./cryptomato_worker/challenges ./cryptomato_worker/challenges
 
 RUN npm run build
 

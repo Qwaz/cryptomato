@@ -157,9 +157,7 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
                 payload = request.content.encode()
                 stdin.send(struct.pack("<L", len(payload)))
                 stdin.send(payload)
-                print(">", request.content)
                 length, = struct.unpack("<L", stdout.recv(4, socket.MSG_WAITALL))
-                print("==> ", length)
                 content = json.loads(stdout.recv(length, socket.MSG_WAITALL).decode())
                 res = True
             except:

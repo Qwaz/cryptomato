@@ -83,7 +83,6 @@ class Experiment_APIServicer(api_pb2_grpc.Experiment_APIServicer):
         raise PermissionError
 
     def RPC(self, request, context):
-        print("<", request.f, request.args)
         e = self.get_evaluation_session(context)
         result = e.rpc(request.f, *json.loads(request.args))
         return api_pb2.RPC_Reply(r=json.dumps(result))

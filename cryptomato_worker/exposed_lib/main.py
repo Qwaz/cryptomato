@@ -35,7 +35,6 @@ rpc_stub = api_pb2_grpc.Experiment_APIStub(rpc_channel)
 def rpc(method, *args):
     request = api_pb2.RPC_Request(f=method, args=json.dumps(args))
     response = rpc_stub.RPC(request)
-    print("=> %r" % response.r, file=sys.stderr)
     return json.loads(response.r)
 
 
@@ -75,16 +74,13 @@ def serve_requests():
     spec = importlib.util.spec_from_file_location("_adversary", PATH)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    print("initial", file=sys.stderr)
 
     while True:
         length, = struct.unpack("<L", sys.stdin.buffer.read(4))
-        print(length, file=sys.stderr)
         data = b''
         keep = True
         while len(data) < length:
             chunk = sys.stdin.buffer.read(length - len(data))
-            print(repr(chunk), file=sys.stderr)
             if not chunk:
                 keep = False
                 break
@@ -93,14 +89,12 @@ def serve_requests():
             break
 
         obj = json.loads(data)
-        print(obj, file=sys.stderr)
         if obj.get("exit"):
             break
 
         args, kwargs = deserialize_args(obj["args"], obj["kwargs"])
         res = getattr(module, obj["name"])(*args, **kwargs)
         payload = json.dumps(res).encode()
-        print(payload, file=sys.stderr)
         sys.stdout.buffer.write(struct.pack("<L", len(payload)) + payload)
 
 
