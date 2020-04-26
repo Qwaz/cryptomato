@@ -4,7 +4,8 @@ ALLOW {
 
     getcwd, getdents, getdents64,
     readlink, readlinkat, access, statfs, newstat, newfstatat, newfstat, newlstat, lgetxattr, getxattr,
-    socket, connect, open, openat, lseek, pipe, shutdown, close,
+    socket, connect, open, openat, lseek, pipe, pipe2, shutdown, close,
+    mkdir, mkdirat,
     read, readv, recvfrom, recvmsg, recvmmsg, pread64,
     write, writev, sendto, sendmsg, sendmmsg, pwrite64,
     dup, dup2, dup3,
@@ -20,6 +21,6 @@ ALLOW {
     gettimeofday, clock_gettime, clock_getres,
 
     rt_sigaction, rt_sigprocmask, rt_sigreturn, sigaltstack, sched_yield,
-    sysinfo, arch_prctl,
+    uname, sysinfo, arch_prctl,
     set_tid_address, restart_syscall, set_robust_list
 } DEFAULT ERRNO(1)
