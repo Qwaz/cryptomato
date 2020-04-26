@@ -52,7 +52,8 @@ def _sandbox_py_exec(
         '--iface_no_lo',
         '-t', '%d' % timeout,
         '--rlimit_cpu', '%d' % (timeout * 2),
-        '--rlimit_nproc', '%d' % max(16, multiprocessing.cpu_count() // 2)
+        '--rlimit_nproc', '%d' % max(16, multiprocessing.cpu_count() // 2),
+        '--seccomp_policy', BASEPATH + '/seccomp.policy',
     ]
     if nsjail_quiet:
         argv += ['--really_quiet']

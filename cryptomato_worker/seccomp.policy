@@ -1,0 +1,27 @@
+ALLOW {
+    execve, fork, vfork, clone, futex, kill, tgkill, tkill, wait4, exit_group,
+    mmap, mprotect, mremap, munmap, brk,
+
+    getcwd, getdents, getdents64,
+    readlink, readlinkat, access, statfs, newstat, newfstatat, newfstat, newlstat, lgetxattr, getxattr,
+    socket, open, openat, lseek, pipe, shutdown, close,
+    read, readv, recvfrom, recvmsg, recvmmsg, pread64,
+    write, writev, sendto, sendmsg, sendmmsg, pwrite64,
+    dup, dup2, dup3,
+    ioctl, fcntl, getsockopt, setsockopt,
+    select, poll, epoll_create, epoll_ctl, epoll_pwait, epoll_wait,
+
+    capget, getrlimit, prlimit64, getrusage,
+    getgroups,
+    getuid, geteuid, getresuid,
+    getgid, getegid, getresgid,
+    getpid, getppid, getpgid, getpgrp,
+    getrandom,
+    gettimeofday,
+
+    rt_sigaction, rt_sigprocmask, rt_sigreturn,
+    sysinfo, arch_prctl,
+    sigaltstack,
+    sched_yield,
+    set_tid_address, set_robust_list
+} DEFAULT ERRNO(1)
