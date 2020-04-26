@@ -1,4 +1,5 @@
 import React from "react";
+import isoFetch from "isomorphic-unfetch";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, Container } from "semantic-ui-react";
@@ -17,7 +18,7 @@ const Header: React.FC = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`/api/logout`);
+      const res = await isoFetch(`/api/logout`);
       mutateUser();
     } catch (error) {
       console.error(error);
@@ -40,7 +41,7 @@ const Header: React.FC = () => {
           <Link href="/submissions">
             <Menu.Item name="submissions" active={startsWith("/submissions")} />
           </Link>
-          {user?.isLoggedIn && (
+          {user.isLoggedIn && (
             <Menu.Menu position="right">
               <Menu.Item name="logout" onClick={logout} />
             </Menu.Menu>

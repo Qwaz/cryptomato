@@ -3,6 +3,11 @@ import { ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { Container, Card, Rating, Label } from "semantic-ui-react";
+import withSession, {
+  User,
+  getUserFromSession,
+  GetServerSidePropsWithSession,
+} from "../lib/session";
 import prisma from "../lib/prisma";
 
 import Layout from "../components/Layout";
@@ -11,6 +16,11 @@ type Props = {
   challenges: ChallengeGetPayload<{
     include: {
       categories: true;
+      solvers: {
+        select: {
+          userId: true;
+        };
+      };
     };
   }>[];
 };
@@ -31,7 +41,7 @@ const Challenges: React.FC<Props> = (props) => {
         as={`/challenges/${challenge.id}`}
         key={challenge.id}
       >
-        <Card link>
+        <Card link color={challenge.solvers.length > 0 ? "green" : null}>
           <Card.Content>
             <Card.Header>{challenge.name}</Card.Header>
             <Card.Description>{challenge.description}</Card.Description>
@@ -59,10 +69,23 @@ const Challenges: React.FC<Props> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+const getServerSidePropsWithSession: GetServerSidePropsWithSession<Props> = async ({
+  req,
+}) => {
+  const user: User = getUserFromSession(req.session);
+  const userId = user.isLoggedIn ? user.id : -1;
+
   const challenges = await prisma.challenge.findMany({
     include: {
       categories: true,
+      solvers: {
+        where: {
+          userId: userId,
+        },
+        select: {
+          userId: true,
+        },
+      },
     },
   });
 
@@ -70,5 +93,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
     props: { challenges },
   };
 };
+
+export const getServerSideProps = withSession(getServerSidePropsWithSession);
 
 export default Challenges;

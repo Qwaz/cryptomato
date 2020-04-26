@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import isoFetch from "isomorphic-unfetch";
 import Router from "next/router";
 import {
   Segment,
@@ -29,7 +30,7 @@ const LoginBanner: React.FC = () => {
     try {
       const body = { email, password };
 
-      const res = await fetch(`/api/login`, {
+      const res = await isoFetch(`/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -51,7 +52,7 @@ const LoginBanner: React.FC = () => {
   return (
     <>
       <Segment placeholder>
-        {user?.isLoggedIn ? (
+        {user.isLoggedIn ? (
           <>
             <Header as="h2" textAlign="center">
               Welcome, {user.nickname}!

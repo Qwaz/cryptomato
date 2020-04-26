@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import isoFetch from "isomorphic-unfetch";
 import { ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Error from "next/error";
@@ -51,7 +52,7 @@ const Challenge: React.FC<Props> = (props) => {
     try {
       const body = { challengeId: chal.id, code };
 
-      const res = await fetch(`/api/challenge/submit`, {
+      const res = await isoFetch(`/api/challenge/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

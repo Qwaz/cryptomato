@@ -17,7 +17,7 @@ const addCategory = async (name) => {
   return result.id;
 };
 
-const addChallenge = async (name, description, level, categoryId) => {
+const addChallenge = async (name, filename, description, level, categoryId) => {
   const categoryIdConnect = categoryId.map((id) => {
     return {
       id: id,
@@ -26,22 +26,23 @@ const addChallenge = async (name, description, level, categoryId) => {
 
   const result = await prisma.challenge.upsert({
     create: {
-      name: name,
-      description: description,
-      level: level,
+      name,
+      filename,
+      description,
+      level,
       categories: {
         connect: categoryIdConnect,
       },
     },
     update: {
-      description: description,
-      level: level,
+      description,
+      level,
       categories: {
         connect: categoryIdConnect,
       },
     },
     where: {
-      name: name,
+      filename,
     },
   });
 
@@ -66,6 +67,7 @@ async function main() {
 
     await addChallenge(
       content.name,
+      filename.substring(0, filename.length - 5),
       content.description,
       content.level,
       categoryIdArr

@@ -59,7 +59,7 @@ async function main() {
   const {
     code,
     userId,
-    challenge: { id: challengeId, name: challengeName },
+    challenge: { id: challengeId, filename: challengeName },
   } = await prisma.submission.update({
     data: {
       status: SubmissionStatus.GRADING,
@@ -73,7 +73,7 @@ async function main() {
       challenge: {
         select: {
           id: true,
-          name: true,
+          filename: true,
         },
       },
     },

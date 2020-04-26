@@ -50,7 +50,8 @@ model SolveLog {
 
 model Challenge {
   id          Int          @default(autoincrement()) @id
-  name        String       @unique
+  name        String
+  filename    String       @unique
   description String
   level       Int
   categories  Category[]   @relation(references: [id])

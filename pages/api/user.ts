@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import prisma from "../../lib/prisma";
-import withSession, { NextApiRequestWithSession } from "../../lib/session";
+import withSession, {
+  NextApiRequestWithSession,
+  getUserFromSession,
+} from "../../lib/session";
 
 export default async function handle(
   req: NextApiRequest,
@@ -20,14 +23,8 @@ export default async function handle(
 // Always return valid User type
 async function handleGET(req: NextApiRequestWithSession, res: NextApiResponse) {
   // TODO: check whether the user still exists
-  const user = req.session.get("user");
-  if (user?.isLoggedIn) {
-    res.json(user);
-  } else {
-    res.json({
-      isLoggedIn: false,
-    });
-  }
+  const user = getUserFromSession(req.session);
+  res.json(user);
 }
 
 // POST /api/user

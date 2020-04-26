@@ -46,7 +46,7 @@ const Submission: React.FC<Props> = (props) => {
     return <Error statusCode={404} />;
   }
 
-  if (!user || !user?.isLoggedIn) {
+  if (!user.isLoggedIn) {
     return <Error statusCode={401} />;
   }
 
@@ -141,6 +141,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     return NOT_FOUND;
   }
 
+  // TODO: shouldn't leak submission detail to user
   const submission = await prisma.submission.findOne({
     where: {
       id: submissionId,

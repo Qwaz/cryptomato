@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import fetch from "isomorphic-unfetch";
+import isoFetch from "isomorphic-unfetch";
 import Router from "next/router";
 import { Form, Header, Container, Button, Message } from "semantic-ui-react";
 
@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
     try {
       const body = { nickname, email, password };
 
-      const res = await fetch(`/api/user`, {
+      const res = await isoFetch(`/api/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

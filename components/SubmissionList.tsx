@@ -15,7 +15,7 @@ const SubmissionList: React.FC<Props> = (props) => {
 
   const submissionList = props.submissions.map((submission) => {
     let submissionIdCell;
-    if (user?.isLoggedIn && user.id === submission.user.id) {
+    if (user.isLoggedIn && user.id === submission.user.id) {
       submissionIdCell = (
         <Table.Cell>
           <Link href="/submissions/[id]" as={`/submissions/${submission.id}`}>

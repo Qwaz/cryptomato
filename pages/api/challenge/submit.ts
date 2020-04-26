@@ -8,7 +8,7 @@ export default withSession(
   async (req: NextApiRequestWithSession, res: NextApiResponse) => {
     const user = req.session.get("user");
 
-    if (!user?.isLoggedIn) {
+    if (!user.isLoggedIn) {
       // need login
       res.status(401).end();
       return;
