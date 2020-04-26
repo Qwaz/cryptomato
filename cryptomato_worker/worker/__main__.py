@@ -15,7 +15,7 @@ from .sandbox import SandboxExecServicer, SANDBOX_UID, SANDBOX_GID
 
 def serve_sandbox_server():
     sandbox_server = grpc.server(
-        futures.ThreadPoolExecutor(max_workers=max(1, multiprocessing.cpu_count() // 2))
+        futures.ThreadPoolExecutor(max_workers=max(1, multiprocessing.cpu_count()))
     )
     private_api_pb2_grpc.add_SandboxExecServicer_to_server(SandboxExecServicer(), sandbox_server)
     sandbox_server.add_insecure_port('unix:///var/run/cryptomato/sandbox.sock')
@@ -39,7 +39,7 @@ def serve_misc_server():
     print('eval_server started!')
 
     manager_server = grpc.server(
-        futures.ThreadPoolExecutor(max_workers=8)
+        futures.ThreadPoolExecutor(max_workers=max(8, multiprocessing.cpu_count()))
     )
     private_api_pb2_grpc.add_ManagerServicer_to_server(ManagerServicer(), manager_server)
     manager_server.add_insecure_port('0.0.0.0:10000')
