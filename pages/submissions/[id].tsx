@@ -3,6 +3,7 @@ import { SubmissionGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Error from "next/error";
 import dynamic from "next/dynamic";
+import JSONViewer from "react-json-viewer";
 import { Container, Label, Header } from "semantic-ui-react";
 import prisma from "../../lib/prisma";
 import useUser from "../../lib/useUser";
@@ -36,6 +37,7 @@ type Props = {
 };
 
 const Submission: React.FC<Props> = (props) => {
+  // TODO: refresh page
   const submission = props.submission;
 
   const { user } = useUser();
@@ -104,7 +106,7 @@ const Submission: React.FC<Props> = (props) => {
         <Header as="h2" dividing>
           Detail
         </Header>
-        {submission.detail}
+        <JSONViewer json={JSON.parse(submission.detail)} />
       </>
     );
   }

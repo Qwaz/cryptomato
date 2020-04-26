@@ -42,6 +42,6 @@ export default withSession(
       }
     });
 
-    res.status(200).end();
+    res.status(200).json({ id: submission.id });
   }
 );

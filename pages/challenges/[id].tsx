@@ -58,7 +58,8 @@ const Challenge: React.FC<Props> = (props) => {
       });
 
       if (res.ok) {
-        Router.push(`/challenges/${chal.id}/submissions`);
+        const submissionId = (await res.json()).id;
+        Router.push(`/submissions/${submissionId}`);
       } else {
         setLoading(false);
       }
