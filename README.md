@@ -1,10 +1,10 @@
 # Cryptomato
 
-Cryptomato, is an interactive platform that grants students a unique opportunity
+_Cryptomato_ is an interactive platform that grants students a unique opportunity
 to learn and exercise fundamental cryptanalysistechniques through hands-on experiences
 of designing andimplementing attacks.
 
-Cryptomato is developed as a course project of Georgia Tech CS6260 Applied Cryptography.
+_Cryptomato_ is developed as a course project of Georgia Tech CS6260 Applied Cryptography.
 
 ## Development
 
