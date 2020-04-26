@@ -5,184 +5,118 @@ import private_api_pb2 as private__api__pb2
 
 
 class ManagerStub(object):
-    """Missing associated documentation comment in .proto file"""
+  # missing associated documentation comment in .proto file
+  pass
 
-    def __init__(self, channel):
-        """Constructor.
+  def __init__(self, channel):
+    """Constructor.
 
-        Args:
-            channel: A grpc.Channel.
-        """
-        self.Evaluation = channel.unary_unary(
-                '/Manager/Evaluation',
-                request_serializer=private__api__pb2.EvaluationRequest.SerializeToString,
-                response_deserializer=private__api__pb2.EvaluationReply.FromString,
-                )
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Evaluation = channel.unary_unary(
+        '/Manager/Evaluation',
+        request_serializer=private__api__pb2.EvaluationRequest.SerializeToString,
+        response_deserializer=private__api__pb2.EvaluationReply.FromString,
+        )
 
 
 class ManagerServicer(object):
-    """Missing associated documentation comment in .proto file"""
+  # missing associated documentation comment in .proto file
+  pass
 
-    def Evaluation(self, request, context):
-        """Missing associated documentation comment in .proto file"""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+  def Evaluation(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
 
 
 def add_ManagerServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-            'Evaluation': grpc.unary_unary_rpc_method_handler(
-                    servicer.Evaluation,
-                    request_deserializer=private__api__pb2.EvaluationRequest.FromString,
-                    response_serializer=private__api__pb2.EvaluationReply.SerializeToString,
-            ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-            'Manager', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
- # This class is part of an EXPERIMENTAL API.
-class Manager(object):
-    """Missing associated documentation comment in .proto file"""
-
-    @staticmethod
-    def Evaluation(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Manager/Evaluation',
-            private__api__pb2.EvaluationRequest.SerializeToString,
-            private__api__pb2.EvaluationReply.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+  rpc_method_handlers = {
+      'Evaluation': grpc.unary_unary_rpc_method_handler(
+          servicer.Evaluation,
+          request_deserializer=private__api__pb2.EvaluationRequest.FromString,
+          response_serializer=private__api__pb2.EvaluationReply.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'Manager', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
 
 
 class SandboxExecStub(object):
-    """Missing associated documentation comment in .proto file"""
+  # missing associated documentation comment in .proto file
+  pass
 
-    def __init__(self, channel):
-        """Constructor.
+  def __init__(self, channel):
+    """Constructor.
 
-        Args:
-            channel: A grpc.Channel.
-        """
-        self.Exec = channel.unary_unary(
-                '/SandboxExec/Exec',
-                request_serializer=private__api__pb2.ExecRequest.SerializeToString,
-                response_deserializer=private__api__pb2.ExecReply.FromString,
-                )
-        self.WriteStdin = channel.unary_unary(
-                '/SandboxExec/WriteStdin',
-                request_serializer=private__api__pb2.WriteStdinRequest.SerializeToString,
-                response_deserializer=private__api__pb2.WriteStdinReply.FromString,
-                )
-        self.Terminate = channel.unary_unary(
-                '/SandboxExec/Terminate',
-                request_serializer=private__api__pb2.TerminateRequest.SerializeToString,
-                response_deserializer=private__api__pb2.TerminateReply.FromString,
-                )
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Exec = channel.unary_unary(
+        '/SandboxExec/Exec',
+        request_serializer=private__api__pb2.ExecRequest.SerializeToString,
+        response_deserializer=private__api__pb2.ExecReply.FromString,
+        )
+    self.WriteStdin = channel.unary_unary(
+        '/SandboxExec/WriteStdin',
+        request_serializer=private__api__pb2.WriteStdinRequest.SerializeToString,
+        response_deserializer=private__api__pb2.WriteStdinReply.FromString,
+        )
+    self.Terminate = channel.unary_unary(
+        '/SandboxExec/Terminate',
+        request_serializer=private__api__pb2.TerminateRequest.SerializeToString,
+        response_deserializer=private__api__pb2.TerminateReply.FromString,
+        )
 
 
 class SandboxExecServicer(object):
-    """Missing associated documentation comment in .proto file"""
+  # missing associated documentation comment in .proto file
+  pass
 
-    def Exec(self, request, context):
-        """Missing associated documentation comment in .proto file"""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+  def Exec(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
 
-    def WriteStdin(self, request, context):
-        """Missing associated documentation comment in .proto file"""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+  def WriteStdin(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
 
-    def Terminate(self, request, context):
-        """Missing associated documentation comment in .proto file"""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+  def Terminate(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
 
 
 def add_SandboxExecServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-            'Exec': grpc.unary_unary_rpc_method_handler(
-                    servicer.Exec,
-                    request_deserializer=private__api__pb2.ExecRequest.FromString,
-                    response_serializer=private__api__pb2.ExecReply.SerializeToString,
-            ),
-            'WriteStdin': grpc.unary_unary_rpc_method_handler(
-                    servicer.WriteStdin,
-                    request_deserializer=private__api__pb2.WriteStdinRequest.FromString,
-                    response_serializer=private__api__pb2.WriteStdinReply.SerializeToString,
-            ),
-            'Terminate': grpc.unary_unary_rpc_method_handler(
-                    servicer.Terminate,
-                    request_deserializer=private__api__pb2.TerminateRequest.FromString,
-                    response_serializer=private__api__pb2.TerminateReply.SerializeToString,
-            ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-            'SandboxExec', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
- # This class is part of an EXPERIMENTAL API.
-class SandboxExec(object):
-    """Missing associated documentation comment in .proto file"""
-
-    @staticmethod
-    def Exec(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SandboxExec/Exec',
-            private__api__pb2.ExecRequest.SerializeToString,
-            private__api__pb2.ExecReply.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def WriteStdin(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SandboxExec/WriteStdin',
-            private__api__pb2.WriteStdinRequest.SerializeToString,
-            private__api__pb2.WriteStdinReply.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Terminate(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SandboxExec/Terminate',
-            private__api__pb2.TerminateRequest.SerializeToString,
-            private__api__pb2.TerminateReply.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+  rpc_method_handlers = {
+      'Exec': grpc.unary_unary_rpc_method_handler(
+          servicer.Exec,
+          request_deserializer=private__api__pb2.ExecRequest.FromString,
+          response_serializer=private__api__pb2.ExecReply.SerializeToString,
+      ),
+      'WriteStdin': grpc.unary_unary_rpc_method_handler(
+          servicer.WriteStdin,
+          request_deserializer=private__api__pb2.WriteStdinRequest.FromString,
+          response_serializer=private__api__pb2.WriteStdinReply.SerializeToString,
+      ),
+      'Terminate': grpc.unary_unary_rpc_method_handler(
+          servicer.Terminate,
+          request_deserializer=private__api__pb2.TerminateRequest.FromString,
+          response_serializer=private__api__pb2.TerminateReply.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'SandboxExec', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
