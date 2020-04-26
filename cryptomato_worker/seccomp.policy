@@ -21,6 +21,6 @@ ALLOW {
     gettimeofday, clock_gettime, clock_getres,
 
     rt_sigaction, rt_sigprocmask, rt_sigreturn, sigaltstack, sched_yield,
-    uname, sysinfo, arch_prctl,
+    newuname, sysinfo, arch_prctl,
     set_tid_address, restart_syscall, set_robust_list
 } DEFAULT ERRNO(1)
