@@ -1,0 +1,12 @@
+name = "4.1"
+
+description = """
+From homework 4.1.
+"""
+
+categories = [
+  "assignment",
+  "ind-cpa"
+]
+
+level = 1

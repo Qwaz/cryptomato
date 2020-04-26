@@ -78,12 +78,23 @@ class SandboxExecStub(object):
                 request_serializer=private__api__pb2.SandboxExecRequest.SerializeToString,
                 response_deserializer=private__api__pb2.SandboxExecReply.FromString,
                 )
+        self.SandboxWriteStdin = channel.unary_unary(
+                '/SandboxExec/SandboxWriteStdin',
+                request_serializer=private__api__pb2.SandboxWriteStdinRequest.SerializeToString,
+                response_deserializer=private__api__pb2.SandboxWriteStdinReply.FromString,
+                )
 
 
 class SandboxExecServicer(object):
     """Missing associated documentation comment in .proto file"""
 
     def SandboxExec(self, request, context):
+        """Missing associated documentation comment in .proto file"""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SandboxWriteStdin(self, request, context):
         """Missing associated documentation comment in .proto file"""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -96,6 +107,11 @@ def add_SandboxExecServicer_to_server(servicer, server):
                     servicer.SandboxExec,
                     request_deserializer=private__api__pb2.SandboxExecRequest.FromString,
                     response_serializer=private__api__pb2.SandboxExecReply.SerializeToString,
+            ),
+            'SandboxWriteStdin': grpc.unary_unary_rpc_method_handler(
+                    servicer.SandboxWriteStdin,
+                    request_deserializer=private__api__pb2.SandboxWriteStdinRequest.FromString,
+                    response_serializer=private__api__pb2.SandboxWriteStdinReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -120,5 +136,21 @@ class SandboxExec(object):
         return grpc.experimental.unary_unary(request, target, '/SandboxExec/SandboxExec',
             private__api__pb2.SandboxExecRequest.SerializeToString,
             private__api__pb2.SandboxExecReply.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SandboxWriteStdin(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/SandboxExec/SandboxWriteStdin',
+            private__api__pb2.SandboxWriteStdinRequest.SerializeToString,
+            private__api__pb2.SandboxWriteStdinReply.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

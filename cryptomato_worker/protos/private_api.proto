@@ -15,6 +15,7 @@ message EvaluationReply {
 
 service SandboxExec {
   rpc SandboxExec (SandboxExecRequest) returns (SandboxExecReply) {}
+  rpc SandboxWriteStdin (SandboxWriteStdinRequest) returns (SandboxWriteStdinReply) {}
 }
 
 message SandboxExecRequest {
@@ -23,5 +24,14 @@ message SandboxExecRequest {
 }
 
 message SandboxExecReply {
+  string result = 1;
+}
+
+message SandboxWriteStdinRequest {
+  string id = 1;
+  string content = 2;
+}
+
+message SandboxWriteStdinReply {
   string result = 1;
 }

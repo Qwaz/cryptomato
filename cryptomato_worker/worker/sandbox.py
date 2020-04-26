@@ -1,11 +1,14 @@
 import json
 import multiprocessing
 import os
-import pwd
+import socket
 import subprocess
 import tempfile
+import traceback
+import struct
 
 import grpc
+import pwd
 
 from . import BASEPATH
 from .protos import private_api_pb2
@@ -20,6 +23,8 @@ SANDBOX_USERNAME = 'nobody'
 SANDBOX_UID = pwd.getpwnam(SANDBOX_USERNAME).pw_uid
 SANDBOX_GID = pwd.getpwnam(SANDBOX_USERNAME).pw_gid
 
+_processes = {}
+
 
 def _sandbox_py_exec(
         code,
@@ -28,8 +33,9 @@ def _sandbox_py_exec(
         nsjail_quiet=True,
         envs=None,
         rw_mounts=None,
+        entrypoint=None,
 ):
-    code_file = tempfile.NamedTemporaryFile()
+    code_file = tempfile.NamedTemporaryFile(delete=False)
     if isinstance(code, str):
         code = code.encode('utf-8')
     code_file.write(code)
@@ -49,8 +55,6 @@ def _sandbox_py_exec(
     ]
     if nsjail_quiet:
         argv += ['--really_quiet']
-    if not check_output:
-        argv += ['--silent']
     argv += [
         '--user', '%d:%d' % (SANDBOX_UID, SANDBOX_UID),
         '--group', '%d:%d' % (SANDBOX_GID, SANDBOX_GID),
@@ -69,17 +73,20 @@ def _sandbox_py_exec(
         '-T', '/dev/',
         '-R', '/dev/urandom',
         '-B', '/dev/null',
-        '-T', '/tmp/',
-        '-R', code_file.name + ':/tmp/main.py',
+        '-B', '/tmp:/tmp/',
+        '-R', code_file.name + ':/tmp/user.py',
         '-R', BASEPATH + '/exposed_lib/:/tmp/cryptomato',
         '--',
-        '/usr/bin/python3', '/tmp/main.py'
+        '/usr/bin/python3', '/tmp/user.py' if entrypoint is None else entrypoint
     ]
     if check_output:
         result = subprocess.check_output(argv, stderr=subprocess.STDOUT)
+        code_file.close()
     else:
-        result = subprocess.call(argv)
-    code_file.close()
+        stdin, stdout = socket.socketpair(), socket.socketpair()
+        open("/tmp/cmd", "w").write(" ".join(argv))
+        subprocess.Popen(argv, stdin=stdin[1], stdout=stdout[1])
+        result = stdin[0], stdout[0]
     return result
 
 
@@ -117,6 +124,12 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
                 request.code,
                 **options,
             )
+            if not options.get("check_output", False):
+                secret = os.urandom(16).hex()
+                stdin, stdout = user_code_output
+                _processes[secret] = (stdin, stdout)
+                user_code_output = secret.encode()
+
             result = {
                 'type': 'success',
                 'output': user_code_output.decode('ascii'),
@@ -129,6 +142,27 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
         except Exception as e:
             result = {
                 'type': 'Exception',
-                'message': str(type(e))
+                'message': traceback.format_exc(e)
             }
         return private_api_pb2.SandboxExecReply(result=json.dumps(result))
+
+    def SandboxWriteStdin(self, request, context):
+        stdin, stdout = _processes.get(request.id)
+        content = None
+        if stdin is None:
+            res = False
+            content = "Process not found: %r" % request.id
+        else:
+            try:
+                payload = request.content.encode()
+                stdin.send(struct.pack("<L", len(payload)))
+                stdin.send(payload)
+                print(">", request.content)
+                length, = struct.unpack("<L", stdout.recv(4, socket.MSG_WAITALL))
+                print("==> ", length)
+                content = json.loads(stdout.recv(length, socket.MSG_WAITALL).decode())
+                res = True
+            except:
+                content = traceback.format_exc()
+                res = False
+        return private_api_pb2.SandboxWriteStdinReply(result=json.dumps({"success": res, "content": content}))

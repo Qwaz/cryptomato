@@ -1,13 +1,16 @@
 import hashlib
+import importlib.util
 import json
 import os
+import sys
+import traceback
 
 import grpc
 
-from .challenges import *
+from . import BASEPATH
 from .protos import api_pb2
 from .protos import api_pb2_grpc
-from .sandbox import sandbox_py_exec
+from .wrapper import RPCWrapper
 
 __all__ = (
     'Experiment_APIServicer',
@@ -16,6 +19,7 @@ __all__ = (
 )
 
 evaluation_sessions = {}
+sys.path.append("/cryptomato_worker/")
 
 
 class EvaluationSession:
@@ -24,22 +28,38 @@ class EvaluationSession:
         _h.update(rpc_secret.encode('ascii'))
         self.__hashed_rpc_secret = _h.digest()
         self.__challenge_id = challenge_id
-        if self.__challenge_id == 'TestChallenge1':
-            self.__challenge_instance = TestChallenge1()
-        else:
-            raise NotImplementedError
+
+        # Run tester
+        self.__challenge_instance = self._import_path(
+            os.path.join(BASEPATH, "challenges", challenge_id + '.test.py'))
+        self.wrapper = None
+
+    @staticmethod
+    def _import_path(path):
+        spec = importlib.util.spec_from_file_location("_tester", path)
+        tester = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tester)
+        return tester
+
+    def exec(self, code, rpc_id, rpc_secret):
+        self.wrapper = RPCWrapper(code, {'RPC_ID': rpc_id, 'RPC_SECRET': rpc_secret, 'PYTHONUNBUFFERED': '1'})
+        result = self.__challenge_instance.test(self.wrapper)
+        return {
+            'type': 'success',
+            'solved': result['status'] == 'success',
+            'detail': result,
+            'user_code_output': json.dumps(result),
+        }
 
     def is_valid_rpc_secret(self, rpc_secret):
         _h = hashlib.sha3_512()
         _h.update(rpc_secret.encode('ascii'))
         return self.__hashed_rpc_secret == _h.digest()
 
-    def rpc(self, f, *args):
-        if f.startswith('_') or not f.replace('_', '').isalnum():
-            raise PermissionError
-
-        if f in self.__challenge_instance.EXPORTS:
-            return getattr(self.__challenge_instance, f)(*args)
+    def rpc(self, f, *args, **kwargs):
+        f = self.wrapper.query_obj(f)
+        if f:
+            return f(*args, **kwargs)
         else:
             raise NotImplementedError
 
@@ -63,6 +83,7 @@ class Experiment_APIServicer(api_pb2_grpc.Experiment_APIServicer):
         raise PermissionError
 
     def RPC(self, request, context):
+        print("<", request.f, request.args)
         e = self.get_evaluation_session(context)
         result = e.rpc(request.f, *json.loads(request.args))
         return api_pb2.RPC_Reply(r=json.dumps(result))
@@ -92,23 +113,19 @@ class Experiment_APIServiceAuthValidationInterceptor(grpc.ServerInterceptor):
 def evaluate(challenge_name, code):
     rpc_id = os.urandom(16).hex()
     rpc_secret = os.urandom(32).hex()
-    evaluation_sessions[rpc_id] = EvaluationSession(rpc_secret, challenge_name)
+    try:
+        evaluation_sessions[rpc_id] = EvaluationSession(rpc_secret, challenge_name)
+    except Exception as e:
+        return json.dumps({
+            'type': 'Exception',
+            'message': 'Tester load exception: ' + traceback.format_exc()
+        })
+
     # noinspection PyBroadException
     try:
-        result = sandbox_py_exec(
-            code,
-            envs={'RPC_ID': rpc_id, 'RPC_SECRET': rpc_secret},
-            check_output=True,
-        )
-        if result['type'] == 'success':
-            solved, detail = evaluation_sessions[rpc_id].result()
-            result = {
-                'type': 'success',
-                'solved': solved,
-                'detail': detail,
-                'user_code_output': result['output'],
-            }
+        result = evaluation_sessions[rpc_id].exec(code, rpc_id, rpc_secret)
     except Exception as e:
-        result = {'type': 'Exception', 'message': str(type(e))}
+        result = {'type': 'Exception', 'message': traceback.format_exc()}
+
     del evaluation_sessions[rpc_id]
     return json.dumps(result)

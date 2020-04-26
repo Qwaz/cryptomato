@@ -23,31 +23,34 @@ RUN apt-get update -y \
         bison \
         ca-certificates \
         flex \
-        g++ \
-        gcc \
         git \
         libprotobuf-dev \
         libnl-route-3-dev \
-        make \
         pkg-config \
         protobuf-compiler \
-        $(apt-mark showauto) \
     && apt-get install -y --no-install-recommends \
         libprotobuf10 \
         libnl-route-3-200 \
         python3 python3-pip python3-setuptools gcc g++ python3-dev \
-    && cd / \
-    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ~/.cache/pip /nsjail
+    && rm -rf /nsjail
 
-RUN pip3 install wheel
+RUN pip3 install -U wheel pip
 RUN pip3 install grpcio grpcio-tools
 
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
         build-essential \
         libcap-dev \
-    && pip3 install python-prctl \
-    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ~/.cache/pip
+    && pip3 install python-prctl
+
+# Crypto libraries
+RUN apt-get install -y --no-install-recommends \
+        libgmp-dev libmpc-dev libmpfr-dev # gmpy2
+
+RUN pip install pycryptodome gmpy2
+
+# Clear apt & pip cache
+# RUN apt-get remove --purge -y $(apt-mark showauto)
+RUN rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* ~/.cache/pip
 
 COPY . /cryptomato_worker
 

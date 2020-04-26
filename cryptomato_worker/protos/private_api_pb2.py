@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x11private_api.proto\"9\n\x11\x45valuationRequest\x12\x16\n\x0e\x63hallenge_name\x18\x01 \x01(\t\x12\x0c\n\x04\x63ode\x18\x02 \x01(\t\"!\n\x0f\x45valuationReply\x12\x0e\n\x06result\x18\x01 \x01(\t\"3\n\x12SandboxExecRequest\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0f\n\x07options\x18\x02 \x01(\t\"\"\n\x10SandboxExecReply\x12\x0e\n\x06result\x18\x01 \x01(\t2?\n\x07Manager\x12\x34\n\nEvaluation\x12\x12.EvaluationRequest\x1a\x10.EvaluationReply\"\x00\x32\x46\n\x0bSandboxExec\x12\x37\n\x0bSandboxExec\x12\x13.SandboxExecRequest\x1a\x11.SandboxExecReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11private_api.proto\"9\n\x11\x45valuationRequest\x12\x16\n\x0e\x63hallenge_name\x18\x01 \x01(\t\x12\x0c\n\x04\x63ode\x18\x02 \x01(\t\"!\n\x0f\x45valuationReply\x12\x0e\n\x06result\x18\x01 \x01(\t\"3\n\x12SandboxExecRequest\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0f\n\x07options\x18\x02 \x01(\t\"\"\n\x10SandboxExecReply\x12\x0e\n\x06result\x18\x01 \x01(\t\"7\n\x18SandboxWriteStdinRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\t\"(\n\x16SandboxWriteStdinReply\x12\x0e\n\x06result\x18\x01 \x01(\t2?\n\x07Manager\x12\x34\n\nEvaluation\x12\x12.EvaluationRequest\x1a\x10.EvaluationReply\"\x00\x32\x91\x01\n\x0bSandboxExec\x12\x37\n\x0bSandboxExec\x12\x13.SandboxExecRequest\x1a\x11.SandboxExecReply\"\x00\x12I\n\x11SandboxWriteStdin\x12\x19.SandboxWriteStdinRequest\x1a\x17.SandboxWriteStdinReply\"\x00\x62\x06proto3'
 )
 
 
@@ -161,10 +161,81 @@ _SANDBOXEXECREPLY = _descriptor.Descriptor(
   serialized_end=202,
 )
 
+
+_SANDBOXWRITESTDINREQUEST = _descriptor.Descriptor(
+  name='SandboxWriteStdinRequest',
+  full_name='SandboxWriteStdinRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='SandboxWriteStdinRequest.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='content', full_name='SandboxWriteStdinRequest.content', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=204,
+  serialized_end=259,
+)
+
+
+_SANDBOXWRITESTDINREPLY = _descriptor.Descriptor(
+  name='SandboxWriteStdinReply',
+  full_name='SandboxWriteStdinReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='result', full_name='SandboxWriteStdinReply.result', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=261,
+  serialized_end=301,
+)
+
 DESCRIPTOR.message_types_by_name['EvaluationRequest'] = _EVALUATIONREQUEST
 DESCRIPTOR.message_types_by_name['EvaluationReply'] = _EVALUATIONREPLY
 DESCRIPTOR.message_types_by_name['SandboxExecRequest'] = _SANDBOXEXECREQUEST
 DESCRIPTOR.message_types_by_name['SandboxExecReply'] = _SANDBOXEXECREPLY
+DESCRIPTOR.message_types_by_name['SandboxWriteStdinRequest'] = _SANDBOXWRITESTDINREQUEST
+DESCRIPTOR.message_types_by_name['SandboxWriteStdinReply'] = _SANDBOXWRITESTDINREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 EvaluationRequest = _reflection.GeneratedProtocolMessageType('EvaluationRequest', (_message.Message,), {
@@ -195,6 +266,20 @@ SandboxExecReply = _reflection.GeneratedProtocolMessageType('SandboxExecReply', 
   })
 _sym_db.RegisterMessage(SandboxExecReply)
 
+SandboxWriteStdinRequest = _reflection.GeneratedProtocolMessageType('SandboxWriteStdinRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SANDBOXWRITESTDINREQUEST,
+  '__module__' : 'private_api_pb2'
+  # @@protoc_insertion_point(class_scope:SandboxWriteStdinRequest)
+  })
+_sym_db.RegisterMessage(SandboxWriteStdinRequest)
+
+SandboxWriteStdinReply = _reflection.GeneratedProtocolMessageType('SandboxWriteStdinReply', (_message.Message,), {
+  'DESCRIPTOR' : _SANDBOXWRITESTDINREPLY,
+  '__module__' : 'private_api_pb2'
+  # @@protoc_insertion_point(class_scope:SandboxWriteStdinReply)
+  })
+_sym_db.RegisterMessage(SandboxWriteStdinReply)
+
 
 
 _MANAGER = _descriptor.ServiceDescriptor(
@@ -203,8 +288,8 @@ _MANAGER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=204,
-  serialized_end=267,
+  serialized_start=303,
+  serialized_end=366,
   methods=[
   _descriptor.MethodDescriptor(
     name='Evaluation',
@@ -227,8 +312,8 @@ _SANDBOXEXEC = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=269,
-  serialized_end=339,
+  serialized_start=369,
+  serialized_end=514,
   methods=[
   _descriptor.MethodDescriptor(
     name='SandboxExec',
@@ -237,6 +322,15 @@ _SANDBOXEXEC = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_SANDBOXEXECREQUEST,
     output_type=_SANDBOXEXECREPLY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SandboxWriteStdin',
+    full_name='SandboxExec.SandboxWriteStdin',
+    index=1,
+    containing_service=None,
+    input_type=_SANDBOXWRITESTDINREQUEST,
+    output_type=_SANDBOXWRITESTDINREPLY,
     serialized_options=None,
   ),
 ])

@@ -48,10 +48,12 @@ const addChallenge = async (name, description, level, categoryId) => {
   return result;
 };
 
-const CHALLENGE_DIR = "challenges";
+const CHALLENGE_DIR = "cryptomato_worker/challenges";
 
 async function main() {
   for (const filename of fs.readdirSync(CHALLENGE_DIR)) {
+    if(!filename.endsWith(".toml")) continue;
+
     console.log(`Processing ${filename}`);
     const data = fs.readFileSync(`${CHALLENGE_DIR}/${filename}`);
     let content = toml.parse(data);
