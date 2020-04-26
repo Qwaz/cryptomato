@@ -14,24 +14,33 @@ message EvaluationReply {
 }
 
 service SandboxExec {
-  rpc SandboxExec (SandboxExecRequest) returns (SandboxExecReply) {}
-  rpc SandboxWriteStdin (SandboxWriteStdinRequest) returns (SandboxWriteStdinReply) {}
+  rpc Exec (ExecRequest) returns (ExecReply) {}
+  rpc WriteStdin (WriteStdinRequest) returns (WriteStdinReply) {}
+  rpc Terminate (TerminateRequest) returns (TerminateReply) {}
 }
 
-message SandboxExecRequest {
+message ExecRequest {
   string code = 1;
   string options = 2;
 }
 
-message SandboxExecReply {
+message ExecReply {
   string result = 1;
 }
 
-message SandboxWriteStdinRequest {
+message WriteStdinRequest {
   string id = 1;
   string content = 2;
 }
 
-message SandboxWriteStdinReply {
+message WriteStdinReply {
   string result = 1;
+}
+
+message TerminateRequest {
+  string id = 1;
+}
+
+message TerminateReply {
+  string output = 1;
 }

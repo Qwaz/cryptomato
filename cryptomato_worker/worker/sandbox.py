@@ -1,11 +1,12 @@
 import json
 import multiprocessing
 import os
+import signal
 import socket
+import struct
 import subprocess
 import tempfile
 import traceback
-import struct
 
 import grpc
 import pwd
@@ -51,7 +52,7 @@ def _sandbox_py_exec(
         '--iface_no_lo',
         '-t', '%d' % timeout,
         '--rlimit_cpu', '%d' % (timeout * 2),
-        '--rlimit_nproc', '%d' % max(16, multiprocessing.cpu_count() // 2),
+        '--rlimit_nproc', '%d' % max(16, multiprocessing.cpu_count() // 2)
     ]
     if nsjail_quiet:
         argv += ['--really_quiet']
@@ -71,9 +72,9 @@ def _sandbox_py_exec(
         argv += ['-B', '/var/run/cryptomato/api.sock']
     argv += [
         '-T', '/dev/',
+        '-T', '/tmp/',
         '-R', '/dev/urandom',
         '-B', '/dev/null',
-        '-B', '/tmp:/tmp/',
         '-R', code_file.name + ':/tmp/user.py',
         '-R', BASEPATH + '/exposed_lib/:/tmp/cryptomato',
         '--',
@@ -83,10 +84,18 @@ def _sandbox_py_exec(
         result = subprocess.check_output(argv, stderr=subprocess.STDOUT)
         code_file.close()
     else:
-        stdin, stdout = socket.socketpair(), socket.socketpair()
-        open("/tmp/cmd", "w").write(" ".join(argv))
-        subprocess.Popen(argv, stdin=stdin[1], stdout=stdout[1])
-        result = stdin[0], stdout[0]
+        ipc_in, ipc_out, stdout = socket.socketpair(), socket.socketpair(), tempfile.TemporaryFile()
+        argv[1:1] = [
+            '--pass_fd', str(ipc_in[1].fileno()),
+            '--pass_fd', str(ipc_out[1].fileno()),
+            '-E', 'IPC_IN=%d' % ipc_in[1].fileno(),
+            '-E', 'IPC_OUT=%d' % ipc_out[1].fileno(),
+        ]
+        p = subprocess.Popen(argv, stdout=stdout, stderr=subprocess.STDOUT,
+                             pass_fds=(ipc_in[1].fileno(), ipc_out[1].fileno()))
+        ipc_in[1].close()
+        ipc_out[1].close()
+        result = ipc_in[0], ipc_out[0], stdout, p
     return result
 
 
@@ -96,7 +105,7 @@ def sandbox_py_exec(
 ):
     with grpc.insecure_channel('unix:///var/run/cryptomato/sandbox.sock') as channel:
         stub = private_api_pb2_grpc.SandboxExecStub(channel)
-        response = stub.SandboxExec(private_api_pb2.SandboxExecRequest(
+        response = stub.Exec(private_api_pb2.ExecRequest(
             code=code,
             options=json.dumps(kwargs),
         ))
@@ -116,7 +125,7 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
                 'hello world!\n'
         )
 
-    def SandboxExec(self, request, context):
+    def Exec(self, request, context):
         # noinspection PyBroadException
         try:
             options = json.loads(request.options)
@@ -126,8 +135,7 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
             )
             if not options.get("check_output", False):
                 secret = os.urandom(16).hex()
-                stdin, stdout = user_code_output
-                _processes[secret] = (stdin, stdout)
+                _processes[secret] = user_code_output
                 user_code_output = secret.encode()
 
             result = {
@@ -144,23 +152,42 @@ class SandboxExecServicer(private_api_pb2_grpc.SandboxExecServicer):
                 'type': 'Exception',
                 'message': traceback.format_exc(e)
             }
-        return private_api_pb2.SandboxExecReply(result=json.dumps(result))
+        return private_api_pb2.ExecReply(result=json.dumps(result))
 
-    def SandboxWriteStdin(self, request, context):
-        stdin, stdout = _processes.get(request.id)
-        content = None
-        if stdin is None:
+    def WriteStdin(self, request, context):
+        info = _processes.get(request.id)
+        if info is None:
             res = False
             content = "Process not found: %r" % request.id
         else:
+            ipc_in, ipc_out, _, _ = info
             try:
                 payload = request.content.encode()
-                stdin.send(struct.pack("<L", len(payload)))
-                stdin.send(payload)
-                length, = struct.unpack("<L", stdout.recv(4, socket.MSG_WAITALL))
-                content = json.loads(stdout.recv(length, socket.MSG_WAITALL).decode())
+                ipc_in.send(struct.pack("<L", len(payload)))
+                ipc_in.send(payload)
+                length, = struct.unpack("<L", ipc_out.recv(4, socket.MSG_WAITALL))
+                content = json.loads(ipc_out.recv(length, socket.MSG_WAITALL).decode())
                 res = True
             except:
                 content = traceback.format_exc()
                 res = False
-        return private_api_pb2.SandboxWriteStdinReply(result=json.dumps({"success": res, "content": content}))
+        return private_api_pb2.WriteStdinReply(result=json.dumps({"success": res, "content": content}))
+
+    def Terminate(self, request, context):
+        info = _processes.get(request.id)
+        if info is None:
+            content = "Process not found: %r" % request.id
+        else:
+            ipc_in, ipc_out, stdout, proc = info
+            try:
+                proc.kill()
+                stdout.seek(0)
+                content = stdout.read().decode()
+                ipc_in.close()
+                ipc_out.close()
+                stdout.close()
+            except:
+                content = traceback.format_exc()
+            del _processes[request.id]
+
+        return private_api_pb2.TerminateReply(output=content)

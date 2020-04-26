@@ -24,7 +24,6 @@ class Scheme:
         if self.b == 1:
             return self.g(m)
         else:
-            # Problem 2.1.1
             assert len(m) % 2 == 0
             mid = len(m) // 2
             return self.Fbase(m[:mid]) + self.Fbase(m[mid:])
@@ -32,7 +31,7 @@ class Scheme:
 
 def test(module):
     # PRF tester
-    counter = [0]
+    counter = 0
     ITERATION = 100
 
     res = [0, 0]
@@ -42,6 +41,7 @@ def test(module):
         b = random.getrandbits(1)
         scheme = Scheme(b, k, m, n)
         res[module.A(scheme) == b] += 1
+        counter += scheme.counter
 
     failure, success = res
     adv = success / ITERATION
@@ -52,7 +52,7 @@ def test(module):
             "failure": failure,
             "success": success
         },
-        "average_counter": counter[0] / ITERATION,
+        "average_counter": counter / ITERATION,
         "iteration": ITERATION,
         "adv": adv
     }

@@ -42,13 +42,19 @@ class EvaluationSession:
         return tester
 
     def exec(self, code, rpc_id, rpc_secret):
-        self.wrapper = RPCWrapper(code, {'RPC_ID': rpc_id, 'RPC_SECRET': rpc_secret, 'PYTHONUNBUFFERED': '1'})
+        self.wrapper = RPCWrapper(code, {
+            'RPC_ID': rpc_id, 'RPC_SECRET': rpc_secret,
+            # for convenience: stdout shown immediately
+            'PYTHONUNBUFFERED': '1',
+            # import cryptomato => /tmp/cryptomato/__init__.py
+            "PYTHONPATH": '/tmp/'
+        })
         result = self.__challenge_instance.test(self.wrapper)
         return {
             'type': 'success',
             'solved': result['status'] == 'success',
             'detail': result,
-            'user_code_output': json.dumps(result),
+            'user_code_output': self.wrapper.terminate(),
         }
 
     def is_valid_rpc_secret(self, rpc_secret):
@@ -113,7 +119,8 @@ def evaluate(challenge_name, code):
     rpc_id = os.urandom(16).hex()
     rpc_secret = os.urandom(32).hex()
     try:
-        evaluation_sessions[rpc_id] = EvaluationSession(rpc_secret, challenge_name)
+        evaluation_sessions[rpc_id] = EvaluationSession(
+            rpc_secret, challenge_name)
     except Exception as e:
         return json.dumps({
             'type': 'Exception',

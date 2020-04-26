@@ -93,17 +93,33 @@ class RPCWrapper(Wrapper):
             self.channel = grpc.insecure_channel(
                 'unix:///var/run/cryptomato/sandbox.sock')
             stub = private_api_pb2_grpc.SandboxExecStub(self.channel)
-            req = private_api_pb2.SandboxWriteStdinRequest(id=self.process, content=json.dumps({
+            req = private_api_pb2.WriteStdinRequest(id=self.process, content=json.dumps({
                 "args": args,
                 "kwargs": kwargs,
                 "name": key
             }))
-            res = json.loads(stub.SandboxWriteStdin(req).result)
+            res = json.loads(stub.WriteStdin(req).result)
             assert res["success"] == True, "Call to adversary failed (name=%r args=%r kwargs=%r): result=%r" % (
                 key, args, kwargs, res)
             return res["content"]
 
         return handler
 
+    def terminate(self):
+        # Return stdout after terminating the program
+        self.channel = grpc.insecure_channel(
+            'unix:///var/run/cryptomato/sandbox.sock')
+        stub = private_api_pb2_grpc.SandboxExecStub(self.channel)
+        try:
+            req = private_api_pb2.TerminateRequest(id=self.process)
+            return stub.Terminate(req).output
+        except:
+            import traceback
+            traceback.print_exc()
+            return ""
+
     def get_target(self, key):
         return self._wrapper(key)
+
+    def __del__(self):
+        self.terminate()

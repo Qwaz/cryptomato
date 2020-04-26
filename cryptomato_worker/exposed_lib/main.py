@@ -1,17 +1,13 @@
-import grpc
-import os
-import json
-import sys
 import collections
+import importlib.util
+import json
+import os
+import struct
 
-# import cryptomato => /tmp/cryptomato/__init__.py
-sys.path.insert(0, '/tmp/')
-
-
+import grpc
 from cryptomato import api_pb2
 from cryptomato import api_pb2_grpc
-import importlib
-import struct
+
 
 class AuthGateway(grpc.AuthMetadataPlugin):
     def __call__(self, context, callback):
@@ -57,7 +53,8 @@ def deserialize_arg(arg):
             return [deserialize_arg(_) for _ in value]
         return value
     if arg["type"] == "class":
-        return namedtuple_cached(arg["name"], arg["value"].keys())(**{k: deserialize_arg(v) for k, v in arg["value"].items()})
+        return namedtuple_cached(arg["name"], arg["value"].keys())(
+            **{k: deserialize_arg(v) for k, v in arg["value"].items()})
     if arg["type"] == "rpc":
         return lambda *args: rpc(arg["id"], *args)
 
@@ -66,6 +63,7 @@ def deserialize_args(args, kwargs):
     return [deserialize_arg(_) for _ in args], {key: deserialize_arg(value) for key, value in kwargs.items()}
 
 
+# Hardcoded in sandbox.py
 PATH = '/tmp/user.py'
 
 
@@ -75,12 +73,15 @@ def serve_requests():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
 
+    ipc_in = os.fdopen(int(os.getenv("IPC_IN")), "w+b", 0)
+    ipc_out = os.fdopen(int(os.getenv("IPC_OUT")), "w+b", 0)
+
     while True:
-        length, = struct.unpack("<L", sys.stdin.buffer.read(4))
+        length, = struct.unpack("<L", ipc_in.read(4))
         data = b''
         keep = True
         while len(data) < length:
-            chunk = sys.stdin.buffer.read(length - len(data))
+            chunk = ipc_in.read(length - len(data))
             if not chunk:
                 keep = False
                 break
@@ -95,7 +96,7 @@ def serve_requests():
         args, kwargs = deserialize_args(obj["args"], obj["kwargs"])
         res = getattr(module, obj["name"])(*args, **kwargs)
         payload = json.dumps(res).encode()
-        sys.stdout.buffer.write(struct.pack("<L", len(payload)) + payload)
+        ipc_out.write(struct.pack("<L", len(payload)) + payload)
 
 
 # main

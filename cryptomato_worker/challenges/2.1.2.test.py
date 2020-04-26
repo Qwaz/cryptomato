@@ -28,7 +28,7 @@ class Scheme:
 
 def test(module):
     # PRF tester
-    counter = [0]
+    counter = 0
     ITERATION = 100
 
     res = [0, 0]
@@ -38,6 +38,7 @@ def test(module):
         b = random.getrandbits(1)
         scheme = Scheme(b, k, m, n)
         res[module.A(scheme) == b] += 1
+        counter += scheme.counter
 
     failure, success = res
     adv = success / ITERATION
@@ -48,7 +49,7 @@ def test(module):
             "failure": failure,
             "success": success
         },
-        "average_counter": counter[0] / ITERATION,
+        "average_counter": counter / ITERATION,
         "iteration": ITERATION,
         "adv": adv
     }
