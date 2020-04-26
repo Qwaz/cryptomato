@@ -1,7 +1,7 @@
 import React from "react";
 import isoFetch from "isomorphic-unfetch";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { Menu, Container } from "semantic-ui-react";
 import useUser from "../lib/useUser";
 
@@ -20,6 +20,7 @@ const Header: React.FC = () => {
     try {
       const res = await isoFetch(`/api/logout`);
       mutateUser();
+      Router.push("/");
     } catch (error) {
       console.error(error);
       alert(error);
@@ -28,7 +29,7 @@ const Header: React.FC = () => {
 
   return (
     <nav>
-      <Menu style={{ marginBottom: "4em" }} size="large" color="green" inverted>
+      <Menu style={{ marginBottom: "2em" }} size="large" color="green" inverted>
         <Container>
           <Link href="/">
             <Menu.Item header style={{ fontSize: "20px" }}>

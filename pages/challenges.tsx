@@ -49,7 +49,7 @@ const Challenges: React.FC<Props> = (props) => {
                 <Icon color="green" name="check"></Icon>
               )}
             </Card.Header>
-            <Card.Description>{challenge.description}</Card.Description>
+            <Card.Description>{challenge.tagline}</Card.Description>
           </Card.Content>
           <Card.Content extra>{categories}</Card.Content>
           <Card.Content extra>

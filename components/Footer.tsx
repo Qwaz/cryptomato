@@ -6,10 +6,10 @@ const Footer: React.FC = () => {
   const router = useRouter();
 
   return (
-    <Container textAlign="center" style={{ paddingTop: "6em" }}>
+    <Container textAlign="center" style={{ paddingTop: "4em" }}>
       <Divider />
       <p>{"\u00A9"} 2020 Cryptomato Project</p>
-      <p>CS 6260 Spring 2020</p>
+      <p>CS6260 Spring 2020</p>
     </Container>
   );
 };

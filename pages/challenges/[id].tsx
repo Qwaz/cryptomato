@@ -5,6 +5,7 @@ import { GetServerSideProps } from "next";
 import Error from "next/error";
 import Router from "next/router";
 import dynamic from "next/dynamic";
+import MarkdownRender from "@nteract/markdown";
 import { Container, Label, Header, Segment } from "semantic-ui-react";
 import prisma from "../../lib/prisma";
 import { normalizeId } from "../../lib/find";
@@ -80,8 +81,9 @@ const Challenge: React.FC<Props> = (props) => {
           <Header as="h1" dividing>
             {chal.name}
             {categories}
+            <Header.Subheader>{chal.tagline}</Header.Subheader>
           </Header>
-          <p>{chal.description}</p>
+          <MarkdownRender source={chal.description} />
 
           <Header as="h2" dividing>
             Code

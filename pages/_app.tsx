@@ -1,6 +1,7 @@
 import "semantic-ui-css/semantic.min.css";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/elegant.css";
+import "./global.css";
 
 import { AppProps } from "next/app";
 import { SWRConfig } from "swr";

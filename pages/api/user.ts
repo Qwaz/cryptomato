@@ -13,7 +13,7 @@ export default async function handle(
   if (req.method === "GET") {
     await withSession(handleGET)(req, res);
   } else if (req.method === "POST") {
-    await handlePOST(req, res);
+    await withSession(handlePOST)(req, res);
   } else {
     res.status(405).end();
   }
@@ -29,8 +29,10 @@ async function handleGET(req: NextApiRequestWithSession, res: NextApiResponse) {
 
 // POST /api/user
 // Required fields in body: nickname, email, password
-async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  // TODO: hash password
+async function handlePOST(
+  req: NextApiRequestWithSession,
+  res: NextApiResponse
+) {
   const { nickname, email, password } = req.body;
 
   let errorArr = [];
@@ -44,7 +46,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (password.length < 8) {
-    errorArr.push("Password leght should be at least 8 characters long");
+    errorArr.push("Password length should be at least 8 characters long");
   }
 
   if (errorArr.length == 0) {
@@ -72,7 +74,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
   if (errorArr.length == 0) {
     try {
       const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-      const result = await prisma.user.create({
+      const user = await prisma.user.create({
         data: {
           email: email,
           nickname: nickname,
@@ -80,7 +82,14 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
         },
       });
 
-      // TODO: login a user
+      // login a user
+      req.session.set("user", {
+        isLoggedIn: true,
+        id: user.id,
+        nickname: user.nickname,
+        email: user.email,
+      });
+      await req.session.save();
 
       res.status(200).end();
       return;

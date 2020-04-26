@@ -52,6 +52,7 @@ model Challenge {
   id          Int          @default(autoincrement()) @id
   name        String
   filename    String       @unique
+  tagline     String
   description String
   level       Int
   categories  Category[]   @relation(references: [id])

@@ -1,8 +1,23 @@
 name = "Homework 2.1.1"
 
-description = """
-From homework 2.1.1.
-"""
+tagline = "From CS6260 homework 2.1.1"
+
+description = '''
+## Problem Statement
+Let $F_0: \{0, 1\}^k \times \{0, 1\}^m \rightarrow \{0, 1\}^n$ be a secure PRF.
+Consider a function $F: \{0, 1\}^k \times \{0, 1\}^{2m} \rightarrow \{0, 1\}^{2n}$
+specified for all $x_1, x_2 \in \{0, 1\}^m$ and all $K \in \{0, 1\}^k$
+by $F(K, x_1 \parallel x_2) = F_0(K, x_1) \parallel F_0(K, x_2)$.
+Prove that $F$ is not a secure PRF.
+
+## Requirements
+Write an adversary $A()$ which performs a PRF experiment.
+Return 0 for "exp-real" and 1 for "exp-random".
+
+## Scheme
+* $k, m, n$: scheme parameter
+* $F()$: PRF oracle
+'''
 
 categories = [
   "assignment",

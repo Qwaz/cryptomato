@@ -41,7 +41,7 @@ type Props = {
 };
 
 const Submission: React.FC<Props> = (props) => {
-  // TODO: refresh page
+  // TODO: automatic refresh
   const submission = props.submission;
 
   if (submission === null) {

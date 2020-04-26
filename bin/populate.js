@@ -17,7 +17,14 @@ const addCategory = async (name) => {
   return result.id;
 };
 
-const addChallenge = async (name, filename, description, level, categoryId) => {
+const addChallenge = async (
+  name,
+  filename,
+  tagline,
+  description,
+  level,
+  categoryId
+) => {
   const categoryIdConnect = categoryId.map((id) => {
     return {
       id: id,
@@ -28,6 +35,7 @@ const addChallenge = async (name, filename, description, level, categoryId) => {
     create: {
       name,
       filename,
+      tagline,
       description,
       level,
       categories: {
@@ -35,6 +43,8 @@ const addChallenge = async (name, filename, description, level, categoryId) => {
       },
     },
     update: {
+      name,
+      tagline,
       description,
       level,
       categories: {
@@ -68,6 +78,7 @@ async function main() {
     await addChallenge(
       content.name,
       filename.substring(0, filename.length - 5),
+      content.tagline,
       content.description,
       content.level,
       categoryIdArr

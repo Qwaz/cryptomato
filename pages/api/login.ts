@@ -7,7 +7,6 @@ export default withSession(
   async (req: NextApiRequestWithSession, res: NextApiResponse) => {
     const { email, password } = await req.body;
 
-    // TODO: hash password
     const user = await prisma.user.findOne({
       where: {
         email: email,
