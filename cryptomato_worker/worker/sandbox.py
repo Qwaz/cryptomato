@@ -54,6 +54,7 @@ def _sandbox_py_exec(
         '--rlimit_cpu', '%d' % (timeout * 2),
         '--rlimit_nproc', '%d' % max(16, multiprocessing.cpu_count() // 2),
         '--seccomp_policy', BASEPATH + '/seccomp.policy',
+        '--seccomp_log',
     ]
     if nsjail_quiet:
         argv += ['--really_quiet']
