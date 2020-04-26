@@ -2,7 +2,7 @@ import React from "react";
 import { ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { Container, Card, Rating, Label } from "semantic-ui-react";
+import { Container, Card, Rating, Label, Icon } from "semantic-ui-react";
 import withSession, {
   User,
   getUserFromSession,
@@ -43,7 +43,12 @@ const Challenges: React.FC<Props> = (props) => {
       >
         <Card link color={challenge.solvers.length > 0 ? "green" : null}>
           <Card.Content>
-            <Card.Header>{challenge.name}</Card.Header>
+            <Card.Header>
+              {challenge.name}{" "}
+              {challenge.solvers.length > 0 && (
+                <Icon color="green" name="check"></Icon>
+              )}
+            </Card.Header>
             <Card.Description>{challenge.description}</Card.Description>
           </Card.Content>
           <Card.Content extra>{categories}</Card.Content>

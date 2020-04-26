@@ -1,13 +1,15 @@
 import React from "react";
 import { SubmissionGetPayload } from "@prisma/client";
-import { GetServerSideProps } from "next";
 import Error from "next/error";
 import dynamic from "next/dynamic";
 import JSONViewer from "react-json-viewer";
 import { Container, Label, Header } from "semantic-ui-react";
+import withSession, {
+  GetServerSidePropsWithSession,
+  getUserFromSession,
+} from "../../lib/session";
+import { normalizeId } from "../../lib/find";
 import prisma from "../../lib/prisma";
-import useUser from "../../lib/useUser";
-import { normalizeId, SerializableCreatedAt } from "../../lib/find";
 
 import Layout from "../../components/Layout";
 
@@ -16,42 +18,34 @@ const CodeEditor = dynamic(import("../../components/CodeEditor"), {
 });
 
 type Props = {
-  submission: SerializableCreatedAt<
-    SubmissionGetPayload<{
-      include: {
-        challenge: {
-          select: {
-            id: true;
-            name: true;
-          };
-        };
-        user: {
-          select: {
-            id: true;
-            nickname: true;
-          };
+  submission: SubmissionGetPayload<{
+    select: {
+      id: true;
+      status: true;
+      detail: true;
+      code: true;
+      challenge: {
+        select: {
+          id: true;
+          name: true;
         };
       };
-    }>
-  > | null;
+      user: {
+        select: {
+          id: true;
+          nickname: true;
+        };
+      };
+    };
+  }> | null;
 };
 
 const Submission: React.FC<Props> = (props) => {
   // TODO: refresh page
   const submission = props.submission;
 
-  const { user } = useUser();
-
   if (submission === null) {
     return <Error statusCode={404} />;
-  }
-
-  if (!user.isLoggedIn) {
-    return <Error statusCode={401} />;
-  }
-
-  if (user.id !== submission.user.id) {
-    return <Error statusCode={403} />;
   }
 
   let statusLabel;
@@ -117,7 +111,9 @@ const Submission: React.FC<Props> = (props) => {
         <Header as="h1">
           Submission #{submission.id}
           {statusLabel}
-          <Header.Subheader>for {submission.challenge.name}</Header.Subheader>
+          <Header.Subheader>
+            for {submission.challenge.name} by {submission.user.nickname}
+          </Header.Subheader>
         </Header>
 
         {detailView}
@@ -131,22 +127,26 @@ const Submission: React.FC<Props> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
+const getServerSidePropsWithSession: GetServerSidePropsWithSession<Props> = async ({
+  req,
+  params,
+}) => {
   const NOT_FOUND = { props: { submission: null } };
 
-  const submissionId = normalizeId(context.params.id);
+  const submissionId = normalizeId(params.id);
   if (submissionId === null) {
     return NOT_FOUND;
   }
 
-  // TODO: shouldn't leak submission detail to user
-  const submission = await prisma.submission.findOne({
+  let submission = await prisma.submission.findOne({
     where: {
       id: submissionId,
     },
-    include: {
+    select: {
+      id: true,
+      status: true,
+      detail: true,
+      code: true,
       challenge: {
         select: {
           id: true,
@@ -166,16 +166,19 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     return NOT_FOUND;
   }
 
-  const serializableSubmission = {
-    ...submission,
-    createdAt: submission.createdAt.toLocaleString(),
-  };
+  // do not show code if the user is not the author
+  const user = getUserFromSession(req.session);
+  if (!(user.isLoggedIn && user.id === submission.user.id)) {
+    submission.code = "# This is not your submission";
+  }
 
   return {
     props: {
-      submission: serializableSubmission,
+      submission,
     },
   };
 };
+
+export const getServerSideProps = withSession(getServerSidePropsWithSession);
 
 export default Submission;

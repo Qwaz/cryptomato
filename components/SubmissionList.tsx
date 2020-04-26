@@ -11,22 +11,7 @@ type Props = {
 
 const SubmissionList: React.FC<Props> = (props) => {
   // TODO: refresh for pending and grading request
-  const { user } = useUser();
-
   const submissionList = props.submissions.map((submission) => {
-    let submissionIdCell;
-    if (user.isLoggedIn && user.id === submission.user.id) {
-      submissionIdCell = (
-        <Table.Cell>
-          <Link href="/submissions/[id]" as={`/submissions/${submission.id}`}>
-            <a>{submission.id}</a>
-          </Link>
-        </Table.Cell>
-      );
-    } else {
-      submissionIdCell = <Table.Cell>{submission.id}</Table.Cell>;
-    }
-
     let statusCell;
     switch (submission.status) {
       case "PENDING": {
@@ -56,7 +41,11 @@ const SubmissionList: React.FC<Props> = (props) => {
     }
     return (
       <Table.Row key={submission.id}>
-        {submissionIdCell}
+        <Table.Cell>
+          <Link href="/submissions/[id]" as={`/submissions/${submission.id}`}>
+            <a>{submission.id}</a>
+          </Link>
+        </Table.Cell>
         <Table.Cell>{submission.user.nickname}</Table.Cell>
         <Table.Cell>
           <Link
