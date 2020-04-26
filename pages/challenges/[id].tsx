@@ -5,11 +5,12 @@ import Error from "next/error";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 import { Container, Label, Header, Segment } from "semantic-ui-react";
+import prisma from "../../lib/prisma";
+import { normalizeId } from "../../lib/find";
 
 import Layout from "../../components/Layout";
 import LoginCheckButton from "../../components/LoginCheckButton";
 import ChallengeMenu from "../../components/ChallengeMenu";
-import { findChallengeWithStringId } from "../../lib/find";
 
 const CodeEditor = dynamic(import("../../components/CodeEditor"), {
   ssr: false,
@@ -80,7 +81,9 @@ const Challenge: React.FC<Props> = (props) => {
           </Header>
           <p>{chal.description}</p>
 
-          <Header as="h2">Code</Header>
+          <Header as="h2" dividing>
+            Code
+          </Header>
           <CodeEditor
             value={code}
             onBeforeChange={(editor, data, value) => {
@@ -98,10 +101,16 @@ const Challenge: React.FC<Props> = (props) => {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
+  const challengeId = normalizeId(context.params.id);
+  if (challengeId === null) {
+    return { props: null };
+  }
+
   return {
     props: {
-      challenge: await findChallengeWithStringId(context.params.id, {
-        categories: true,
+      challenge: await prisma.challenge.findOne({
+        where: { id: challengeId },
+        include: { categories: true },
       }),
     },
   };

@@ -52,7 +52,7 @@ const CHALLENGE_DIR = "cryptomato_worker/challenges";
 
 async function main() {
   for (const filename of fs.readdirSync(CHALLENGE_DIR)) {
-    if(!filename.endsWith(".toml")) continue;
+    if (!filename.endsWith(".toml")) continue;
 
     console.log(`Processing ${filename}`);
     const data = fs.readFileSync(`${CHALLENGE_DIR}/${filename}`);

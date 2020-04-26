@@ -1,17 +1,33 @@
 import React from "react";
 import { Table } from "semantic-ui-react";
 
-import { SerializableSubmissionListElem } from "../lib/find";
+import { SerializableSubmission } from "../lib/find";
+import Link from "next/link";
+import useUser from "../lib/useUser";
 
 type Props = {
-  submissions: SerializableSubmissionListElem[];
+  submissions: SerializableSubmission[];
 };
 
 const SubmissionList: React.FC<Props> = (props) => {
-  const submissionList = props.submissions.map((submission) => {
-    let statusCell;
+  // TODO: refresh for pending and grading request
+  const { user } = useUser();
 
-    // TODO: refresh for pending and grading request
+  const submissionList = props.submissions.map((submission) => {
+    let submissionIdCell;
+    if (user?.isLoggedIn && user.id === submission.user.id) {
+      submissionIdCell = (
+        <Table.Cell>
+          <Link href="/submissions/[id]" as={`/submissions/${submission.id}`}>
+            <a>{submission.id}</a>
+          </Link>
+        </Table.Cell>
+      );
+    } else {
+      submissionIdCell = <Table.Cell>{submission.id}</Table.Cell>;
+    }
+
+    let statusCell;
     switch (submission.status) {
       case "PENDING": {
         statusCell = <Table.Cell>Pending</Table.Cell>;
@@ -40,9 +56,16 @@ const SubmissionList: React.FC<Props> = (props) => {
     }
     return (
       <Table.Row key={submission.id}>
-        <Table.Cell>{submission.id}</Table.Cell>
+        {submissionIdCell}
         <Table.Cell>{submission.user.nickname}</Table.Cell>
-        <Table.Cell>{submission.challenge.name}</Table.Cell>
+        <Table.Cell>
+          <Link
+            href="/challenges/[id]"
+            as={`/challenges/${submission.challenge.id}`}
+          >
+            <a>{submission.challenge.name}</a>
+          </Link>
+        </Table.Cell>
         {statusCell}
         <Table.Cell>{submission.createdAt}</Table.Cell>
       </Table.Row>
@@ -50,7 +73,7 @@ const SubmissionList: React.FC<Props> = (props) => {
   });
 
   return (
-    <Table celled>
+    <Table celled striped>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell>ID</Table.HeaderCell>

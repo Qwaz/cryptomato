@@ -1,33 +1,21 @@
-import {
-  PrismaClient,
-  ChallengeClient,
-  ChallengeGetPayload,
-  SubmissionGetPayload,
-  FindManySubmissionArgs,
-  ChallengeInclude,
-  Subset,
-} from "@prisma/client";
+import { SubmissionGetPayload, FindManySubmissionArgs } from "@prisma/client";
+import prisma from "./prisma";
 
-const prisma = new PrismaClient();
+type PotentialId = number | string | string[];
 
-export function findChallengeWithStringId<T extends ChallengeInclude>(
-  challengeId: string | string[],
-  include?: T
-): ChallengeClient<ChallengeGetPayload<{ include: T }> | null> {
-  if (challengeId instanceof Array || !challengeId.match(/^[1-9]\d*$/)) {
+export function normalizeId(id: PotentialId): number | null {
+  if (typeof id === "number") {
+    return id;
+  }
+
+  if (id instanceof Array || !id.match(/^[1-9]\d*$/)) {
     return null;
   }
 
-  const challengeIdNumber = parseInt(challengeId);
-  return prisma.challenge.findOne({
-    where: {
-      id: challengeIdNumber,
-    },
-    include,
-  });
+  return parseInt(id);
 }
 
-export const SubmissionListSelect = {
+export const SerializableSubmissionSelect = {
   id: true,
   challenge: {
     select: {
@@ -45,20 +33,23 @@ export const SubmissionListSelect = {
   status: true,
 };
 
-export type SerializableSubmissionListElem = Omit<
+export type SerializableCreatedAt<T> = Omit<T, "createdAt"> & {
+  createdAt: string;
+};
+
+export type SerializableSubmission = SerializableCreatedAt<
   SubmissionGetPayload<{
-    select: typeof SubmissionListSelect;
-  }>,
-  "createdAt"
-> & { createdAt: string };
+    select: typeof SerializableSubmissionSelect;
+  }>
+>;
 
 export function findSerializableSubmissions(
   args?: FindManySubmissionArgs
-): Promise<Array<SerializableSubmissionListElem>> {
+): Promise<Array<SerializableSubmission>> {
   return prisma.submission
     .findMany({
       ...args,
-      select: SubmissionListSelect,
+      select: SerializableSubmissionSelect,
     })
     .then((submissionArray) =>
       submissionArray.map((submission) => ({

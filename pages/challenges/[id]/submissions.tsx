@@ -3,19 +3,20 @@ import { Challenge } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Error from "next/error";
 import { Container } from "semantic-ui-react";
+import prisma from "../../../lib/prisma";
 
 import Layout from "../../../components/Layout";
 import ChallengeMenu from "../../../components/ChallengeMenu";
-import {
-  findChallengeWithStringId,
-  SerializableSubmissionListElem,
-  findSerializableSubmissions,
-} from "../../../lib/find";
 import SubmissionList from "../../../components/SubmissionList";
+import {
+  SerializableSubmission,
+  findSerializableSubmissions,
+  normalizeId,
+} from "../../../lib/find";
 
 type Props = {
   challenge: Challenge | null;
-  submissions: SerializableSubmissionListElem[];
+  submissions: SerializableSubmission[];
 };
 
 const Submissions: React.FC<Props> = (props) => {
@@ -36,9 +37,18 @@ const Submissions: React.FC<Props> = (props) => {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
-  const challenge = await findChallengeWithStringId(context.params.id);
+  const NOT_FOUND = { props: { challenge: null, submissions: [] } };
+
+  const challengeId = normalizeId(context.params.id);
+  if (challengeId === null) {
+    return NOT_FOUND;
+  }
+
+  const challenge = await prisma.challenge.findOne({
+    where: { id: challengeId },
+  });
   if (challenge === null) {
-    return { props: { challenge: null, submissions: [] } };
+    return NOT_FOUND;
   }
 
   // TODO: pagination

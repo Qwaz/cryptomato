@@ -32,6 +32,7 @@ model Submission {
   code        String
   status      SubmissionStatus
   output      String?
+  detail      String?
   solveLog    SolveLog?
 }
 

@@ -1,8 +1,9 @@
 import React from "react";
-import { PrismaClient, ChallengeGetPayload } from "@prisma/client";
+import { ChallengeGetPayload } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { Container, Card, Rating, Label } from "semantic-ui-react";
+import prisma from "../lib/prisma";
 
 import Layout from "../components/Layout";
 
@@ -13,8 +14,6 @@ type Props = {
     };
   }>[];
 };
-
-const prisma = new PrismaClient();
 
 const Challenges: React.FC<Props> = (props) => {
   const problemList = props.challenges.map((challenge) => {

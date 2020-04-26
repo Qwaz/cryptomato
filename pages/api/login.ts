@@ -1,10 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-
+import prisma from "../../lib/prisma";
 import withSession, { NextApiRequestWithSession } from "../../lib/session";
-
-const prisma = new PrismaClient();
 
 export default withSession(
   async (req: NextApiRequestWithSession, res: NextApiResponse) => {

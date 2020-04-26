@@ -6,11 +6,11 @@ import Layout from "../components/Layout";
 import SubmissionList from "../components/SubmissionList";
 import {
   findSerializableSubmissions,
-  SerializableSubmissionListElem,
+  SerializableSubmission,
 } from "../lib/find";
 
 type Props = {
-  submissions: SerializableSubmissionListElem[];
+  submissions: SerializableSubmission[];
 };
 
 const Submissions: React.FC<Props> = (props) => {

@@ -122,11 +122,13 @@ async function main() {
       // convert gRPC result to DB query
       let status;
       let output;
+      let detail = null;
 
       const result = JSON.parse(reply.result);
       console.log(result);
       if (result.type === "success") {
         output = result.user_code_output;
+        detail = JSON.stringify(result.detail);
         if (result.solved) {
           status = SubmissionStatus.CORRECT;
         } else {
@@ -141,6 +143,7 @@ async function main() {
         data: {
           status: status,
           output: output,
+          detail,
         },
         select: {
           id: true,
