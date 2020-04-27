@@ -89,6 +89,7 @@ ALLOW {
     mkdirat,
     mmap,
     mprotect,
+    madvise,
     mq_getsetattr,
     mq_notify,
     mq_open,
