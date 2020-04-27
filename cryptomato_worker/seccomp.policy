@@ -1,4 +1,5 @@
 ALLOW {
+    ioctl,
     accept,
     accept4,
     access,
