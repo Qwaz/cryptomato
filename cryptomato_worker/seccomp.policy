@@ -1,7 +1,7 @@
 ALLOW {
     ioctl,
-    accept,
-    accept4,
+    socket,
+    connect,
     access,
     alarm,
     arch_prctl,
